@@ -1,0 +1,6 @@
+@SantaRamona_HostAddress = http://localhost:5056
+
+GET {{SantaRamona_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
