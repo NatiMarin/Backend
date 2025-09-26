@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Mis Proyectos\\SantaRamona\\SantaRamona.csproj": {}
+    "C:\\Users\\magal\\source\\repos\\ProyectoFinal\\SantaRamona.csproj": {}
   },
   "projects": {
-    "C:\\Mis Proyectos\\SantaRamona\\SantaRamona.csproj": {
+    "C:\\Users\\magal\\source\\repos\\ProyectoFinal\\SantaRamona.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Mis Proyectos\\SantaRamona\\SantaRamona.csproj",
+        "projectUniqueName": "C:\\Users\\magal\\source\\repos\\ProyectoFinal\\SantaRamona.csproj",
         "projectName": "SantaRamona",
-        "projectPath": "C:\\Mis Proyectos\\SantaRamona\\SantaRamona.csproj",
-        "packagesPath": "C:\\Users\\carla\\.nuget\\packages\\",
-        "outputPath": "C:\\Mis Proyectos\\SantaRamona\\obj\\",
+        "projectPath": "C:\\Users\\magal\\source\\repos\\ProyectoFinal\\SantaRamona.csproj",
+        "packagesPath": "C:\\Users\\magal\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\magal\\source\\repos\\ProyectoFinal\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\carla\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\magal\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -44,12 +44,26 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.200"
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "EntityFramework": {
+              "target": "Package",
+              "version": "[6.5.1, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[9.0.9, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[9.0.9, )"
+            },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[6.6.2, )"
@@ -74,7 +88,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.203/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.301/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

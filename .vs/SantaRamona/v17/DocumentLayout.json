@@ -1,74 +1,30 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Mis Proyectos\\SantaRamona\\",
+  "WorkspaceRootPath": "C:\\Users\\magal\\source\\repos\\ProyectoFinal\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{1670AF71-39C6-4716-85FA-38E09CD51899}|SantaRamona.csproj|c:\\mis proyectos\\santaramona\\models\\permiso.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1670AF71-39C6-4716-85FA-38E09CD51899}|SantaRamona.csproj|solutionrelative:models\\permiso.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{1670AF71-39C6-4716-85FA-38E09CD51899}|SantaRamona.csproj|c:\\users\\magal\\source\\repos\\proyectofinal\\models\\authmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1670AF71-39C6-4716-85FA-38E09CD51899}|SantaRamona.csproj|solutionrelative:models\\authmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{1670AF71-39C6-4716-85FA-38E09CD51899}|SantaRamona.csproj|c:\\mis proyectos\\santaramona\\models\\historial_medico.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1670AF71-39C6-4716-85FA-38E09CD51899}|SantaRamona.csproj|solutionrelative:models\\historial_medico.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{1670AF71-39C6-4716-85FA-38E09CD51899}|SantaRamona.csproj|c:\\users\\magal\\source\\repos\\proyectofinal\\controllers\\tamanocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1670AF71-39C6-4716-85FA-38E09CD51899}|SantaRamona.csproj|solutionrelative:controllers\\tamanocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{1670AF71-39C6-4716-85FA-38E09CD51899}|SantaRamona.csproj|c:\\mis proyectos\\santaramona\\models\\seguimiento.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1670AF71-39C6-4716-85FA-38E09CD51899}|SantaRamona.csproj|solutionrelative:models\\seguimiento.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1670AF71-39C6-4716-85FA-38E09CD51899}|SantaRamona.csproj|c:\\mis proyectos\\santaramona\\models\\pension.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1670AF71-39C6-4716-85FA-38E09CD51899}|SantaRamona.csproj|solutionrelative:models\\pension.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1670AF71-39C6-4716-85FA-38E09CD51899}|SantaRamona.csproj|c:\\mis proyectos\\santaramona\\models\\animal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1670AF71-39C6-4716-85FA-38E09CD51899}|SantaRamona.csproj|solutionrelative:models\\animal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1670AF71-39C6-4716-85FA-38E09CD51899}|SantaRamona.csproj|c:\\mis proyectos\\santaramona\\models\\tamano.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{1670AF71-39C6-4716-85FA-38E09CD51899}|SantaRamona.csproj|c:\\users\\magal\\source\\repos\\proyectofinal\\models\\tamano.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{1670AF71-39C6-4716-85FA-38E09CD51899}|SantaRamona.csproj|solutionrelative:models\\tamano.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{1670AF71-39C6-4716-85FA-38E09CD51899}|SantaRamona.csproj|c:\\mis proyectos\\santaramona\\models\\estado.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1670AF71-39C6-4716-85FA-38E09CD51899}|SantaRamona.csproj|solutionrelative:models\\estado.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{1670AF71-39C6-4716-85FA-38E09CD51899}|SantaRamona.csproj|c:\\users\\magal\\source\\repos\\proyectofinal\\controllers\\razacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1670AF71-39C6-4716-85FA-38E09CD51899}|SantaRamona.csproj|solutionrelative:controllers\\razacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{1670AF71-39C6-4716-85FA-38E09CD51899}|SantaRamona.csproj|c:\\mis proyectos\\santaramona\\models\\especie.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1670AF71-39C6-4716-85FA-38E09CD51899}|SantaRamona.csproj|solutionrelative:models\\especie.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{1670AF71-39C6-4716-85FA-38E09CD51899}|SantaRamona.csproj|c:\\users\\magal\\source\\repos\\proyectofinal\\data\\dbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1670AF71-39C6-4716-85FA-38E09CD51899}|SantaRamona.csproj|solutionrelative:data\\dbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{1670AF71-39C6-4716-85FA-38E09CD51899}|SantaRamona.csproj|c:\\mis proyectos\\santaramona\\models\\raza.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1670AF71-39C6-4716-85FA-38E09CD51899}|SantaRamona.csproj|solutionrelative:models\\raza.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1670AF71-39C6-4716-85FA-38E09CD51899}|SantaRamona.csproj|c:\\mis proyectos\\santaramona\\models\\rol.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1670AF71-39C6-4716-85FA-38E09CD51899}|SantaRamona.csproj|solutionrelative:models\\rol.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1670AF71-39C6-4716-85FA-38E09CD51899}|SantaRamona.csproj|c:\\mis proyectos\\santaramona\\models\\usuario.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1670AF71-39C6-4716-85FA-38E09CD51899}|SantaRamona.csproj|solutionrelative:models\\usuario.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1670AF71-39C6-4716-85FA-38E09CD51899}|SantaRamona.csproj|c:\\mis proyectos\\santaramona\\models\\estado_usuario.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1670AF71-39C6-4716-85FA-38E09CD51899}|SantaRamona.csproj|solutionrelative:models\\estado_usuario.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1670AF71-39C6-4716-85FA-38E09CD51899}|SantaRamona.csproj|c:\\mis proyectos\\santaramona\\models\\formulario_voluntario.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1670AF71-39C6-4716-85FA-38E09CD51899}|SantaRamona.csproj|solutionrelative:models\\formulario_voluntario.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1670AF71-39C6-4716-85FA-38E09CD51899}|SantaRamona.csproj|c:\\mis proyectos\\santaramona\\models\\formulario_transito.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1670AF71-39C6-4716-85FA-38E09CD51899}|SantaRamona.csproj|solutionrelative:models\\formulario_transito.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1670AF71-39C6-4716-85FA-38E09CD51899}|SantaRamona.csproj|c:\\mis proyectos\\santaramona\\models\\persona.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1670AF71-39C6-4716-85FA-38E09CD51899}|SantaRamona.csproj|solutionrelative:models\\persona.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1670AF71-39C6-4716-85FA-38E09CD51899}|SantaRamona.csproj|c:\\mis proyectos\\santaramona\\models\\formulario_adopcion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1670AF71-39C6-4716-85FA-38E09CD51899}|SantaRamona.csproj|solutionrelative:models\\formulario_adopcion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1670AF71-39C6-4716-85FA-38E09CD51899}|SantaRamona.csproj|c:\\mis proyectos\\santaramona\\models\\formulario_padrino.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1670AF71-39C6-4716-85FA-38E09CD51899}|SantaRamona.csproj|solutionrelative:models\\formulario_padrino.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{1670AF71-39C6-4716-85FA-38E09CD51899}|SantaRamona.csproj|c:\\users\\magal\\source\\repos\\proyectofinal\\controllers\\rolcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1670AF71-39C6-4716-85FA-38E09CD51899}|SantaRamona.csproj|solutionrelative:controllers\\rolcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -78,8 +34,34 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 8,
+          "SelectedChildIndex": 0,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "AuthModel.cs",
+              "DocumentMoniker": "C:\\Users\\magal\\source\\repos\\ProyectoFinal\\Models\\AuthModel.cs",
+              "RelativeDocumentMoniker": "Models\\AuthModel.cs",
+              "ToolTip": "C:\\Users\\magal\\source\\repos\\ProyectoFinal\\Models\\AuthModel.cs",
+              "RelativeToolTip": "Models\\AuthModel.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-26T00:10:21.451Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Tamano.cs",
+              "DocumentMoniker": "C:\\Users\\magal\\source\\repos\\ProyectoFinal\\Models\\Tamano.cs",
+              "RelativeDocumentMoniker": "Models\\Tamano.cs",
+              "ToolTip": "C:\\Users\\magal\\source\\repos\\ProyectoFinal\\Models\\Tamano.cs",
+              "RelativeToolTip": "Models\\Tamano.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-26T00:04:24.236Z",
+              "EditorCaption": ""
+            },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
@@ -87,222 +69,53 @@
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "Historial_Medico.cs",
-              "DocumentMoniker": "C:\\Mis Proyectos\\SantaRamona\\Models\\Historial_Medico.cs",
-              "RelativeDocumentMoniker": "Models\\Historial_Medico.cs",
-              "ToolTip": "C:\\Mis Proyectos\\SantaRamona\\Models\\Historial_Medico.cs",
-              "RelativeToolTip": "Models\\Historial_Medico.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAArAAAAAAAAAA==",
+              "Title": "TamanoController.cs",
+              "DocumentMoniker": "C:\\Users\\magal\\source\\repos\\ProyectoFinal\\Controllers\\TamanoController.cs",
+              "RelativeDocumentMoniker": "Controllers\\TamanoController.cs",
+              "ToolTip": "C:\\Users\\magal\\source\\repos\\ProyectoFinal\\Controllers\\TamanoController.cs",
+              "RelativeToolTip": "Controllers\\TamanoController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB0AAAAWAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-15T22:35:42.019Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "Seguimiento.cs",
-              "DocumentMoniker": "C:\\Mis Proyectos\\SantaRamona\\Models\\Seguimiento.cs",
-              "RelativeDocumentMoniker": "Models\\Seguimiento.cs",
-              "ToolTip": "C:\\Mis Proyectos\\SantaRamona\\Models\\Seguimiento.cs",
-              "RelativeToolTip": "Models\\Seguimiento.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAArAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-15T22:30:33.528Z",
+              "WhenOpened": "2025-09-26T00:04:43.844Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 5,
-              "Title": "Tamano.cs",
-              "DocumentMoniker": "C:\\Mis Proyectos\\SantaRamona\\Models\\Tamano.cs",
-              "RelativeDocumentMoniker": "Models\\Tamano.cs",
-              "ToolTip": "C:\\Mis Proyectos\\SantaRamona\\Models\\Tamano.cs",
-              "RelativeToolTip": "Models\\Tamano.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAcAAAAAAAAAA==",
+              "Title": "RolController.cs",
+              "DocumentMoniker": "C:\\Users\\magal\\source\\repos\\ProyectoFinal\\Controllers\\RolController.cs",
+              "RelativeDocumentMoniker": "Controllers\\RolController.cs",
+              "ToolTip": "C:\\Users\\magal\\source\\repos\\ProyectoFinal\\Controllers\\RolController.cs",
+              "RelativeToolTip": "Controllers\\RolController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB0AAAA1AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-15T22:29:23.057Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "Estado.cs",
-              "DocumentMoniker": "C:\\Mis Proyectos\\SantaRamona\\Models\\Estado.cs",
-              "RelativeDocumentMoniker": "Models\\Estado.cs",
-              "ToolTip": "C:\\Mis Proyectos\\SantaRamona\\Models\\Estado.cs",
-              "RelativeToolTip": "Models\\Estado.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAqAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-15T22:28:54.73Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "Especie.cs",
-              "DocumentMoniker": "C:\\Mis Proyectos\\SantaRamona\\Models\\Especie.cs",
-              "RelativeDocumentMoniker": "Models\\Especie.cs",
-              "ToolTip": "C:\\Mis Proyectos\\SantaRamona\\Models\\Especie.cs",
-              "RelativeToolTip": "Models\\Especie.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAdAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-15T22:28:05.983Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "Raza.cs",
-              "DocumentMoniker": "C:\\Mis Proyectos\\SantaRamona\\Models\\Raza.cs",
-              "RelativeDocumentMoniker": "Models\\Raza.cs",
-              "ToolTip": "C:\\Mis Proyectos\\SantaRamona\\Models\\Raza.cs",
-              "RelativeToolTip": "Models\\Raza.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAGAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-15T22:27:27.83Z",
+              "WhenOpened": "2025-09-26T00:02:43.877Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 3,
-              "Title": "Pension.cs",
-              "DocumentMoniker": "C:\\Mis Proyectos\\SantaRamona\\Models\\Pension.cs",
-              "RelativeDocumentMoniker": "Models\\Pension.cs",
-              "ToolTip": "C:\\Mis Proyectos\\SantaRamona\\Models\\Pension.cs",
-              "RelativeToolTip": "Models\\Pension.cs",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAYwA4AAAAIAAAAAAAAAA==",
+              "Title": "RazaController.cs",
+              "DocumentMoniker": "C:\\Users\\magal\\source\\repos\\ProyectoFinal\\Controllers\\RazaController.cs",
+              "RelativeDocumentMoniker": "Controllers\\RazaController.cs",
+              "ToolTip": "C:\\Users\\magal\\source\\repos\\ProyectoFinal\\Controllers\\RazaController.cs",
+              "RelativeToolTip": "Controllers\\RazaController.cs",
+              "ViewState": "AgIAAEwAAAAAAAAAAAAcwGAAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-15T22:22:15.837Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Permiso.cs",
-              "DocumentMoniker": "C:\\Mis Proyectos\\SantaRamona\\Models\\Permiso.cs",
-              "RelativeDocumentMoniker": "Models\\Permiso.cs",
-              "ToolTip": "C:\\Mis Proyectos\\SantaRamona\\Models\\Permiso.cs",
-              "RelativeToolTip": "Models\\Permiso.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAvAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-15T22:21:39.773Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "Rol.cs",
-              "DocumentMoniker": "C:\\Mis Proyectos\\SantaRamona\\Models\\Rol.cs",
-              "RelativeDocumentMoniker": "Models\\Rol.cs",
-              "ToolTip": "C:\\Mis Proyectos\\SantaRamona\\Models\\Rol.cs",
-              "RelativeToolTip": "Models\\Rol.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAIAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-15T22:20:44.539Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "Usuario.cs",
-              "DocumentMoniker": "C:\\Mis Proyectos\\SantaRamona\\Models\\Usuario.cs",
-              "RelativeDocumentMoniker": "Models\\Usuario.cs",
-              "ToolTip": "C:\\Mis Proyectos\\SantaRamona\\Models\\Usuario.cs",
-              "RelativeToolTip": "Models\\Usuario.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAZAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-15T22:17:22.118Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "Estado_Usuario.cs",
-              "DocumentMoniker": "C:\\Mis Proyectos\\SantaRamona\\Models\\Estado_Usuario.cs",
-              "RelativeDocumentMoniker": "Models\\Estado_Usuario.cs",
-              "ToolTip": "C:\\Mis Proyectos\\SantaRamona\\Models\\Estado_Usuario.cs",
-              "RelativeToolTip": "Models\\Estado_Usuario.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAxAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-15T22:16:28.22Z",
+              "WhenOpened": "2025-09-22T23:19:19.497Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 4,
-              "Title": "Animal.cs",
-              "DocumentMoniker": "C:\\Mis Proyectos\\SantaRamona\\Models\\Animal.cs",
-              "RelativeDocumentMoniker": "Models\\Animal.cs",
-              "ToolTip": "C:\\Mis Proyectos\\SantaRamona\\Models\\Animal.cs",
-              "RelativeToolTip": "Models\\Animal.cs",
-              "ViewState": "AgIAAAQAAAAAAAAAAAAzwA8AAAAXAAAAAAAAAA==",
+              "Title": "DbContext.cs",
+              "DocumentMoniker": "C:\\Users\\magal\\source\\repos\\ProyectoFinal\\Data\\DbContext.cs",
+              "RelativeDocumentMoniker": "Data\\DbContext.cs",
+              "ToolTip": "C:\\Users\\magal\\source\\repos\\ProyectoFinal\\Data\\DbContext.cs",
+              "RelativeToolTip": "Data\\DbContext.cs",
+              "ViewState": "AgIAAAgAAAAAAAAAAAAAwBMAAAAxAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-15T21:50:53.067Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 12,
-              "Title": "Formulario_Voluntario.cs",
-              "DocumentMoniker": "C:\\Mis Proyectos\\SantaRamona\\Models\\Formulario_Voluntario.cs",
-              "RelativeDocumentMoniker": "Models\\Formulario_Voluntario.cs",
-              "ToolTip": "C:\\Mis Proyectos\\SantaRamona\\Models\\Formulario_Voluntario.cs",
-              "RelativeToolTip": "Models\\Formulario_Voluntario.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAqAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-15T22:15:36.571Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 13,
-              "Title": "Formulario_Transito.cs",
-              "DocumentMoniker": "C:\\Mis Proyectos\\SantaRamona\\Models\\Formulario_Transito.cs",
-              "RelativeDocumentMoniker": "Models\\Formulario_Transito.cs",
-              "ToolTip": "C:\\Mis Proyectos\\SantaRamona\\Models\\Formulario_Transito.cs",
-              "RelativeToolTip": "Models\\Formulario_Transito.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-15T22:14:47.967Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 14,
-              "Title": "Persona.cs",
-              "DocumentMoniker": "C:\\Mis Proyectos\\SantaRamona\\Models\\Persona.cs",
-              "RelativeDocumentMoniker": "Models\\Persona.cs",
-              "ToolTip": "C:\\Mis Proyectos\\SantaRamona\\Models\\Persona.cs",
-              "RelativeToolTip": "Models\\Persona.cs",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAQAAAAUAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-15T22:01:46.613Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 15,
-              "Title": "Formulario_Adopcion.cs",
-              "DocumentMoniker": "C:\\Mis Proyectos\\SantaRamona\\Models\\Formulario_Adopcion.cs",
-              "RelativeDocumentMoniker": "Models\\Formulario_Adopcion.cs",
-              "ToolTip": "C:\\Mis Proyectos\\SantaRamona\\Models\\Formulario_Adopcion.cs",
-              "RelativeToolTip": "Models\\Formulario_Adopcion.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAIAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-15T22:14:04.838Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 16,
-              "Title": "Formulario_Padrino.cs",
-              "DocumentMoniker": "C:\\Mis Proyectos\\SantaRamona\\Models\\Formulario_Padrino.cs",
-              "RelativeDocumentMoniker": "Models\\Formulario_Padrino.cs",
-              "ToolTip": "C:\\Mis Proyectos\\SantaRamona\\Models\\Formulario_Padrino.cs",
-              "RelativeToolTip": "Models\\Formulario_Padrino.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAsAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-15T22:12:09.81Z",
+              "WhenOpened": "2025-09-22T23:37:26.403Z",
               "EditorCaption": ""
             }
           ]

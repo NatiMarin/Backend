@@ -1,8 +1,11 @@
-﻿namespace SantaRamona.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace SantaRamona.Models
 {
     public class Tamano
     {
-        public int id_tamaño { get; set; }
-        public string tamaño { get; set; }
+        [Key]
+        public int id_tamano { get; set; }
+        public string tamano { get; set; }
     }
 }
