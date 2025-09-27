@@ -1,12 +1,15 @@
-﻿namespace SantaRamona.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace SantaRamona.Models
 {
     public class Animal
     {
+        [Key]
         public int id_animal { get; set; }
         public string nombre { get; set; }
         public int edad { get; set; }
         public int id_especie { get; set; }
-        public int id_tamaño { get; set; }
+        public int id_tamano { get; set; }
         //public IFormFile imagen { get; set; }
         public int id_raza { get; set; }
         public int id_estado { get; set; }

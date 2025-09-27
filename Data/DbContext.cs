@@ -18,5 +18,7 @@ namespace SantaRamona.Data
         public DbSet<Permiso> Permiso { get; set; }
         public DbSet<Rol> Rol { get; set; }
         public DbSet<Tamano> Tamano { get; set; }
+        public DbSet<Animal> Animal { get; set; }
+        public DbSet<Historial_Medico> Historial_Medico { get; set; }
     }
 }
