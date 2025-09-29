@@ -1,26 +1,10 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Mis Proyectos\\SantaRamona\\",
+  "WorkspaceRootPath": "C:\\MisProyectos\\SantaRamona\\SantaRamona\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{1670AF71-39C6-4716-85FA-38E09CD51899}|SantaRamona.csproj|c:\\mis proyectos\\santaramona\\controllers\\historialmedicocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1670AF71-39C6-4716-85FA-38E09CD51899}|SantaRamona.csproj|solutionrelative:controllers\\historialmedicocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1670AF71-39C6-4716-85FA-38E09CD51899}|SantaRamona.csproj|c:\\mis proyectos\\santaramona\\data\\dbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1670AF71-39C6-4716-85FA-38E09CD51899}|SantaRamona.csproj|solutionrelative:data\\dbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1670AF71-39C6-4716-85FA-38E09CD51899}|SantaRamona.csproj|c:\\mis proyectos\\santaramona\\controllers\\razacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1670AF71-39C6-4716-85FA-38E09CD51899}|SantaRamona.csproj|solutionrelative:controllers\\razacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1670AF71-39C6-4716-85FA-38E09CD51899}|SantaRamona.csproj|c:\\mis proyectos\\santaramona\\controllers\\tamanocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1670AF71-39C6-4716-85FA-38E09CD51899}|SantaRamona.csproj|solutionrelative:controllers\\tamanocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1670AF71-39C6-4716-85FA-38E09CD51899}|SantaRamona.csproj|c:\\mis proyectos\\santaramona\\models\\tamano.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1670AF71-39C6-4716-85FA-38E09CD51899}|SantaRamona.csproj|solutionrelative:models\\tamano.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{1670AF71-39C6-4716-85FA-38E09CD51899}|SantaRamona.csproj|c:\\misproyectos\\santaramona\\santaramona\\.gitignore||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{1670AF71-39C6-4716-85FA-38E09CD51899}|SantaRamona.csproj|solutionrelative:.gitignore||{3B902123-F8A7-4915-9F01-361F908088D0}"
     }
   ],
   "DocumentGroupContainers": [
@@ -39,65 +23,15 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "HistorialMedicoController.cs",
-              "DocumentMoniker": "C:\\Mis Proyectos\\SantaRamona\\Controllers\\HistorialMedicoController.cs",
-              "RelativeDocumentMoniker": "Controllers\\HistorialMedicoController.cs",
-              "ToolTip": "C:\\Mis Proyectos\\SantaRamona\\Controllers\\HistorialMedicoController.cs",
-              "RelativeToolTip": "Controllers\\HistorialMedicoController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAFAAAABuAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-27T15:49:01.054Z",
+              "Title": ".gitignore",
+              "DocumentMoniker": "C:\\MisProyectos\\SantaRamona\\SantaRamona\\.gitignore",
+              "RelativeDocumentMoniker": ".gitignore",
+              "ToolTip": "C:\\MisProyectos\\SantaRamona\\SantaRamona\\.gitignore",
+              "RelativeToolTip": ".gitignore",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAAABIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2025-09-29T21:54:32.709Z",
               "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "RazaController.cs",
-              "DocumentMoniker": "C:\\Mis Proyectos\\SantaRamona\\Controllers\\RazaController.cs",
-              "RelativeDocumentMoniker": "Controllers\\RazaController.cs",
-              "ToolTip": "C:\\Mis Proyectos\\SantaRamona\\Controllers\\RazaController.cs",
-              "RelativeToolTip": "Controllers\\RazaController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAeAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-27T14:48:43.733Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "DbContext.cs",
-              "DocumentMoniker": "C:\\Mis Proyectos\\SantaRamona\\Data\\DbContext.cs",
-              "RelativeDocumentMoniker": "Data\\DbContext.cs",
-              "ToolTip": "C:\\Mis Proyectos\\SantaRamona\\Data\\DbContext.cs",
-              "RelativeToolTip": "Data\\DbContext.cs",
-              "ViewState": "AgIAAAgAAAAAAAAAAAAAwBcAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-27T14:48:43.733Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "TamanoController.cs",
-              "DocumentMoniker": "C:\\Mis Proyectos\\SantaRamona\\Controllers\\TamanoController.cs",
-              "RelativeDocumentMoniker": "Controllers\\TamanoController.cs",
-              "ToolTip": "C:\\Mis Proyectos\\SantaRamona\\Controllers\\TamanoController.cs",
-              "RelativeToolTip": "Controllers\\TamanoController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB0AAAAWAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-27T14:48:43.728Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "Tamano.cs",
-              "DocumentMoniker": "C:\\Mis Proyectos\\SantaRamona\\Models\\Tamano.cs",
-              "RelativeDocumentMoniker": "Models\\Tamano.cs",
-              "ToolTip": "C:\\Mis Proyectos\\SantaRamona\\Models\\Tamano.cs",
-              "RelativeToolTip": "Models\\Tamano.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAANAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-27T14:48:43.715Z"
             }
           ]
         }
