@@ -10,7 +10,6 @@ namespace SantaRamona.Data
             : base(options)
         {
         }
-
         public DbSet<Raza> Raza { get; set; }
         public DbSet<Especie> Especie { get; set; }
         public DbSet<Estado> Estado { get; set; }
@@ -23,5 +22,7 @@ namespace SantaRamona.Data
         public DbSet<Historial_Medico> Historial_Medico { get; set; }
         public DbSet<Persona> Persona { get; set; }
         public DbSet<Usuario> Usuario { get; set; }
+        public DbSet<Pension> Pension { get; set; }
+        public DbSet<Seguimiento> Seguimiento { get; set; }
     }
 }
