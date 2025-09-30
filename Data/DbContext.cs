@@ -15,6 +15,9 @@ namespace SantaRamona.Data
         public DbSet<Estado> Estado { get; set; }
         public DbSet<Estado_Usuario> Estado_Usuario { get; set; }
         public DbSet<Estado_Persona> Estado_Persona { get; set; }
+        public DbSet<Estado_Formulario> Estado_Formulario { get; set; }
+        public DbSet<Estado_Pension> Estado_Pension { get; set; }
+        public DbSet<Tipo_Telefono> Tipo_Telefono { get; set; }
         public DbSet<Permiso> Permiso { get; set; }
         public DbSet<Rol> Rol { get; set; }
         public DbSet<Tamano> Tamano { get; set; }

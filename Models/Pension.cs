@@ -1,7 +1,10 @@
-﻿namespace SantaRamona.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace SantaRamona.Models
 {
     public class Pension
     {
+        [Key]
         public int id_pension { get; set; }
         public string nombre { get; set; }
         public string email { get; set; }

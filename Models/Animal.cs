@@ -13,9 +13,9 @@ namespace SantaRamona.Models
         //public IFormFile imagen { get; set; }
         public int id_raza { get; set; }
         public int id_estado { get; set; }
-        public int id_persona { get; set; }
+        public int? id_persona { get; set; }
         public int id_usuario { get; set;}
         public string historia { get; set; }    
-        public int id_pension {  get; set; } 
+        public int? id_pension {  get; set; } 
     }
 }
