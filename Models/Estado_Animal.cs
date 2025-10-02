@@ -2,10 +2,10 @@
 
 namespace SantaRamona.Models
 {
-    public class Estado
+    public class Estado_Animal
     {
         [Key]
-        public int id_estado { get; set; }
+        public int id_estadoAnimal { get; set; }
         public string estado { get; set; }
     }
 }

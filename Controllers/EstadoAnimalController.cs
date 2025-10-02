@@ -7,27 +7,27 @@ namespace SantaRamona.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class EstadoController : ControllerBase
+    public class EstadoAnimalController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
 
-        public EstadoController(ApplicationDbContext context)
+        public EstadoAnimalController(ApplicationDbContext context)
         {
             _context = context;
         }
 
         // GET: api/Estado
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Estado>>> GetEstados()
+        public async Task<ActionResult<IEnumerable<Estado_Animal>>> GetEstados()
         {
-            return await _context.Estado.ToListAsync();
+            return await _context.Estado_Animal.ToListAsync();
         }
 
         // GET: api/Estado/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Estado>> GetEstado(int id)
+        public async Task<ActionResult<Estado_Animal>> GetEstado(int id)
         {
-            var estado = await _context.Estado.FindAsync(id);
+            var estado = await _context.Estado_Animal.FindAsync(id);
             if (estado == null)
             {
                 return NotFound();
@@ -37,24 +37,24 @@ namespace SantaRamona.Controllers
 
         // POST: api/Estado
         [HttpPost]
-        public async Task<ActionResult<Estado>> PostEstado(Estado estado)
+        public async Task<ActionResult<Estado_Animal>> PostEstado(Estado_Animal estadoAnimal)
         {
-            _context.Estado.Add(estado);
+            _context.Estado_Animal.Add(estadoAnimal);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetEstado), new { id = estado.id_estado }, estado);
+            return CreatedAtAction(nameof(GetEstado), new { id = estadoAnimal.id_estadoAnimal }, estadoAnimal);
         }
 
         // PUT: api/Estado/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutEstado(int id, Estado Estado)
+        public async Task<IActionResult> PutEstado(int id, Estado_Animal Estado_Animal)
         {
-            if (id != Estado.id_estado)
+            if (id != Estado_Animal.id_estadoAnimal)
             {
                 return BadRequest();
             }
 
-            _context.Entry(Estado).State = EntityState.Modified;
+            _context.Entry(Estado_Animal).State = EntityState.Modified;
             try
             {
                 await _context.SaveChangesAsync();
@@ -77,13 +77,13 @@ namespace SantaRamona.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEstado(int id)
         {
-            var estado = await _context.Estado.FindAsync(id);
+            var estado = await _context.Estado_Animal.FindAsync(id);
             if (estado == null)
             {
                 return NotFound();
             }
 
-            _context.Estado.Remove(estado);
+            _context.Estado_Animal.Remove(estado);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -91,7 +91,7 @@ namespace SantaRamona.Controllers
 
         private bool EstadoExists(int id)
         {
-            return _context.Estado.Any(e => e.id_estado == id);
+            return _context.Estado_Animal.Any(e => e.id_estadoAnimal == id);
         }
     }
 }
