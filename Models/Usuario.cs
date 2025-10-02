@@ -1,9 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SantaRamona.Models
 {
+    [Table("USUARIO")]
     public class Usuario
     {
+        
         [Key]
         public int id_usuario { get; set; }
         public string clave { get; set; }
