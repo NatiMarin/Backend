@@ -1,0 +1,113 @@
+﻿@model IEnumerable<SantaRamona.Backoffice.Models.Raza>
+
+@{
+    ViewData["Title"] = "Razas";
+}
+
+<style>
+    .main-container {
+        max-width: 900px;
+        margin: 2rem auto;
+        padding: 1rem;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .form-title {
+        text-align: center;
+        color: #c5a9cb;
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .styled-table {
+        border-collapse: collapse;
+        width: 100%;
+        background-color: #fff;
+        border: 2px solid #c5a9cb;
+        border-radius: 0.5rem;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+        .styled-table th {
+            background-color: #c5a9cb;
+            color: white;
+            padding: 1rem;
+            text-align: left;
+        }
+
+        .styled-table td {
+            padding: 1rem;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .styled-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+    .btn-submit {
+        background-color: #c5a9cb;
+        color: white;
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
+        border: none;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        text-decoration: none;
+        transition: background-color 0.3s;
+        display: inline-block;
+    }
+
+        .btn-submit:hover {
+            background-color: #5b3b99;
+            color: black; /* si querés negro al hover */
+        }
+
+    .summary-errors {
+        color: #d9534f;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+</style>
+
+<div class="main-container">
+    <h2 class="form-title" style="text-transform: uppercase;">Lista de Razas</h2>
+
+    @if (ViewBag.ApiError != null)
+    {
+        <div class="summary-errors">@ViewBag.ApiError</div>
+    }
+
+    @if (Model != null && Model.Any())
+    {
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Descripción</th>
+                    <th style="width: 160px; text-align:right;">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var r in Model)
+                {
+                    <tr>
+                        <td>@r.id_raza</td>
+                        <td>@r.raza</td>
+                        <td style="text-align:right;">
+                            <a asp-controller="Raza" asp-action="Modificar" asp-route-id="@r.id_raza" class="btn-submit">Modificar</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p style="color: #666;">No hay razas cargadas.</p>
+    }
+</div>
+
+<div style="margin-top: 20px; text-align: right;">
+    <a asp-controller="Raza" asp-action="Crear" class="btn-submit">Agregar Nueva Raza</a>
+</div>
