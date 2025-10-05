@@ -1,5 +1,9 @@
 ﻿@model IEnumerable<SantaRamona.Backoffice.Models.Estado_Animal>
 @{
+    await Html.RenderPartialAsync("_AnimalTopNav");
+}
+
+@{
     ViewData["Title"] = "Estados";
 }
 

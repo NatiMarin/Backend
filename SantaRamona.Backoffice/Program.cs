@@ -7,7 +7,6 @@ var builder = WebApplication.CreateBuilder(args);
 // --- Servicios ---
 builder.Services.AddHttpClient("Api", client =>
 {
-    // appsettings.json -> "Api": { "BaseUrl": "https://localhost:7274" }
     var baseUrl = builder.Configuration["Api:BaseUrl"];
     if (string.IsNullOrWhiteSpace(baseUrl))
         throw new InvalidOperationException("Falta configurar Api:BaseUrl en appsettings.json");
@@ -30,12 +29,16 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-// Si no usás auth, podés omitir UseAuthorization()
 // app.UseAuthorization();
 
-// Ruta por defecto: Raza/Index
+// Agregar acá
+// Redirección TEMPORAL de "/" a Home/Index (quitar cuando esté el login)
+app.MapGet("/", () => Results.Redirect("/Home/Index"));
+
+
+// Ruta por defecto (podés dejarla como está o cambiarla luego)
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Raza}/{action=Index}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
