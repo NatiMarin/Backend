@@ -1,0 +1,78 @@
+﻿@model IEnumerable<SantaRamona.Backoffice.Models.Estado_Animal>
+@{
+    ViewData["Title"] = "Estados";
+}
+
+<div class="container mt-4">
+    <h1 class="text-center fw-bold" style="color:#2FA8A2; letter-spacing:.5px;">
+        LISTADO DE ESTADOS
+    </h1>
+
+    @* Avisos arriba (idéntico a los otros módulos) *@
+    @if (ViewBag.Ok != null)
+    {
+        <div class="alert mt-3" role="alert"
+             style="background:#E6F6F5; border:1px solid #2FA8A2; color:#155e59; border-radius:10px;">
+            @ViewBag.Ok
+        </div>
+    }
+    @if (ViewBag.Error != null || ViewBag.ApiError != null)
+    {
+        <div class="alert mt-3" role="alert"
+             style="background:#fff3f3; border:1px solid #d9534f; color:#a94442; border-radius:10px;">
+            @(ViewBag.Error ?? ViewBag.ApiError)
+        </div>
+    }
+
+    <div class="card shadow-sm mt-3" style="border:1px solid #2FA8A2; border-radius:14px;">
+        <div class="card-header" style="background:#2FA8A2; color:#fff; border-top-left-radius:14px; border-top-right-radius:14px;">
+            <div class="d-flex justify-content-between align-items-center">
+                <strong>Estados</strong>
+                <a asp-action="Crear" class="btn"
+                   style="background:#2FA8A2; color:#fff; border-radius:10px; padding:.4rem 1rem;">
+                    + Agregar nuevo estado
+                </a>
+            </div>
+        </div>
+
+        <div class="card-body">
+            @if (Model == null || !Model.Any())
+            {
+                <div class="text-center text-muted">No hay estados cargados.</div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead>
+                            <tr>
+                                <th style="width:140px;">Identificación</th>
+                                <th>Descripción</th>
+                                <th style="width:220px;" class="text-end">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@item.id_estadoAnimal</td>
+                                    <td>@item.estado</td>
+                                    <td class="text-end">
+                                        <a asp-action="Modificar" asp-route-id="@item.id_estadoAnimal" class="btn"
+                                           style="background:#2FA8A2; color:#fff; border-radius:10px; padding:.3rem .9rem; margin-right:.4rem;">
+                                            Modificar
+                                        </a>
+                                        <a asp-action="Eliminar" asp-route-id="@item.id_estadoAnimal" class="btn"
+                                           style="background:#2FA8A2; color:#fff; border-radius:10px; padding:.3rem .9rem;">
+                                            Eliminar
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div>

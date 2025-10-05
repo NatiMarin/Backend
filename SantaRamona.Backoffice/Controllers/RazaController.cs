@@ -127,5 +127,66 @@ namespace SantaRamona.Backoffice.Controllers
             TempData["Ok"] = "Raza actualizada correctamente.";
             return RedirectToAction(nameof(Modificar), new { id = id_raza });
         }
+        // GET: /Raza/Eliminar/5  -> Muestra confirmación
+        [HttpGet]
+        public async Task<IActionResult> Eliminar(int id)
+        {
+            var client = _http.CreateClient("Api");
+
+            var resp = await client.GetAsync($"/api/raza/{id}");
+            if (resp.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                TempData["Error"] = "La raza no existe o ya fue eliminada.";
+                return RedirectToAction(nameof(Index));
+            }
+            if (!resp.IsSuccessStatusCode)
+            {
+                var body = await resp.Content.ReadAsStringAsync();
+                TempData["Error"] = $"GET /api/raza/{id} -> {(int)resp.StatusCode} {resp.ReasonPhrase}. Respuesta: {body}";
+                return RedirectToAction(nameof(Index));
+            }
+
+            var json = await resp.Content.ReadAsStringAsync();
+            var model = JsonSerializer.Deserialize<Raza>(json, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+
+            return View(model); // Views/Raza/Eliminar.cshtml
+        }
+        // POST: /Raza/Eliminar/5  -> Ejecuta el borrado
+        [HttpPost, ValidateAntiForgeryToken, ActionName("Eliminar")]
+        public async Task<IActionResult> EliminarConfirmado(int id)
+        {
+            var client = _http.CreateClient("Api");
+
+            var resp = await client.DeleteAsync($"/api/raza/{id}");
+
+            if (resp.StatusCode == System.Net.HttpStatusCode.Conflict)
+            {
+                var body = await resp.Content.ReadAsStringAsync();
+                TempData["Error"] = "No se puede eliminar la raza porque está en uso en otros registros.";
+                if (!string.IsNullOrWhiteSpace(body)) TempData["ApiDetail"] = body;
+                return RedirectToAction("Eliminar", new { id });
+            }
+
+            if (resp.StatusCode == System.Net.HttpStatusCode.BadRequest)
+            {
+                var body = await resp.Content.ReadAsStringAsync();
+                TempData["Error"] = "No se puede eliminar la raza. El backend informó que está en uso o no cumple las condiciones.";
+                if (!string.IsNullOrWhiteSpace(body)) TempData["ApiDetail"] = body;
+                return RedirectToAction("Eliminar", new { id });
+            }
+
+            if (!resp.IsSuccessStatusCode)
+            {
+                var body = await resp.Content.ReadAsStringAsync();
+                TempData["Error"] = $"DELETE /api/raza/{id} -> {(int)resp.StatusCode} {resp.ReasonPhrase}. Respuesta: {body}";
+                return RedirectToAction("Eliminar", new { id });
+            }
+
+            TempData["Ok"] = "Raza eliminada correctamente.";
+            return RedirectToAction(nameof(Index));
+        }
     }
 }

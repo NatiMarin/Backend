@@ -1,113 +1,78 @@
 ﻿@model IEnumerable<SantaRamona.Backoffice.Models.Raza>
-
 @{
-    ViewData["Title"] = "Razas";
+    ViewData["Title"] = "Lista de Razas";
 }
 
-<style>
-    .main-container {
-        max-width: 900px;
-        margin: 2rem auto;
-        padding: 1rem;
-        font-family: 'Segoe UI', sans-serif;
+<div class="container mt-4">
+    <h1 class="text-center fw-bold" style="color:#2FA8A2; letter-spacing:.5px;">
+        LISTA DE RAZAS
+    </h1>
+
+    @if (ViewBag.Ok != null)
+    {
+        <div class="alert mt-3" role="alert"
+             style="background:#E6F6F5; border:1px solid #2FA8A2; color:#155e59; border-radius:10px;">
+            @ViewBag.Ok
+        </div>
     }
-
-    .form-title {
-        text-align: center;
-        color: #c5a9cb;
-        font-size: 2rem;
-        margin-bottom: 1.5rem;
-    }
-
-    .styled-table {
-        border-collapse: collapse;
-        width: 100%;
-        background-color: #fff;
-        border: 2px solid #c5a9cb;
-        border-radius: 0.5rem;
-        overflow: hidden;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-
-        .styled-table th {
-            background-color: #c5a9cb;
-            color: white;
-            padding: 1rem;
-            text-align: left;
-        }
-
-        .styled-table td {
-            padding: 1rem;
-            border-top: 1px solid #e0e0e0;
-        }
-
-        .styled-table tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-
-    .btn-submit {
-        background-color: #c5a9cb;
-        color: white;
-        padding: 0.5rem 1rem;
-        font-size: 1rem;
-        border: none;
-        border-radius: 0.5rem;
-        cursor: pointer;
-        text-decoration: none;
-        transition: background-color 0.3s;
-        display: inline-block;
-    }
-
-        .btn-submit:hover {
-            background-color: #5b3b99;
-            color: black; /* si querés negro al hover */
-        }
-
-    .summary-errors {
-        color: #d9534f;
-        font-weight: 600;
-        margin-bottom: 1rem;
-    }
-</style>
-
-<div class="main-container">
-    <h2 class="form-title" style="text-transform: uppercase;">Lista de Razas</h2>
-
     @if (ViewBag.ApiError != null)
     {
-        <div class="summary-errors">@ViewBag.ApiError</div>
+        <div class="alert mt-3" role="alert"
+             style="background:#fff3f3; border:1px solid #d9534f; color:#a94442; border-radius:10px;">
+            @ViewBag.ApiError
+        </div>
     }
 
-    @if (Model != null && Model.Any())
-    {
-        <table class="styled-table">
-            <thead>
-                <tr>
-                    <th>Código</th>
-                    <th>Descripción</th>
-                    <th style="width: 160px; text-align:right;">Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var r in Model)
-                {
-                    <tr>
-                        <td>@r.id_raza</td>
-                        <td>@r.raza</td>
-                        <td style="text-align:right;">
-                            <a asp-controller="Raza" asp-action="Modificar" asp-route-id="@r.id_raza" class="btn-submit">Modificar</a>
-                        </td>
+    <div class="card shadow-sm mt-3" style="border:1px solid #2FA8A2; border-radius:14px;">
+        <div class="card-header d-flex justify-content-between align-items-center"
+             style="background:#2FA8A2; color:#fff; border-top-left-radius:14px; border-top-right-radius:14px;">
+            <strong>Razas</strong>
+            <a asp-action="Crear" class="btn"
+               style="background:#fff; color:#2FA8A2; border:1px solid #fff; border-radius:10px; padding:.4rem 1rem;">
+                Agregar Nueva Raza
+            </a>
+        </div>
+
+        <div class="card-body p-0">
+            <table class="table mb-0">
+                <thead>
+                    <tr style="background:#E6F6F5; color:#155e59;">
+                        <th style="border-top-left-radius:10px;">Código</th>
+                        <th>Descripción</th>
+                        <th class="text-end" style="border-top-right-radius:10px;">Acciones</th>
                     </tr>
-                }
-            </tbody>
-        </table>
-    }
-    else
-    {
-        <p style="color: #666;">No hay razas cargadas.</p>
-    }
-</div>
-
-<div style="margin-top: 20px; text-align: right;">
-    <a asp-controller="Raza" asp-action="Crear" class="btn-submit">Agregar Nueva Raza</a>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.id_raza</td>
+                                <td>@item.raza</td>
+                                <td class="text-end">
+                                    <a asp-action="Modificar" asp-route-id="@item.id_raza"
+                                       class="btn btn-sm"
+                                       style="background:#2FA8A2; color:#fff; border-radius:10px; padding:.35rem .8rem; margin-right:.25rem;">
+                                        Modificar
+                                    </a>
+                                    <a asp-action="Eliminar" asp-route-id="@item.id_raza"
+                                       class="btn btn-sm"
+                                       style="background:#2FA8A2; color:#fff; border-radius:10px; padding:.35rem .8rem;">
+                                        Eliminar
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="3" class="text-center text-muted p-4">No hay razas cargadas.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
