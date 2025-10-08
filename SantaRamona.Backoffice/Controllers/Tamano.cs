@@ -76,7 +76,7 @@ namespace SantaRamona.Backoffice.Controllers
             return View(new Tamano());
         }
 
-        // GET: /Tamano/Modificar/5
+        // GET: /Tamano/Modificar/
         [HttpGet]
         public async Task<IActionResult> Modificar(int id)
         {
@@ -138,59 +138,102 @@ namespace SantaRamona.Backoffice.Controllers
             return RedirectToAction(nameof(Modificar), new { id = id_tamano });
         }
 
-        // GET: /Tamano/Eliminar/5
+        // GET: /Tamano/Eliminar/
         [HttpGet]
         public async Task<IActionResult> Eliminar(int id)
         {
             var client = _http.CreateClient("Api");
-            var resp = await client.GetAsync($"/api/tamano/{id}");
 
-            if (resp.StatusCode == System.Net.HttpStatusCode.NotFound)
+            var r = await client.GetAsync($"/api/tamano/{id}");
+            if (!r.IsSuccessStatusCode)
             {
-                TempData["Error"] = "El tamaño no existe o ya fue eliminado.";
-                return RedirectToAction(nameof(Index));
-            }
-            if (!resp.IsSuccessStatusCode)
-            {
-                var body = await resp.Content.ReadAsStringAsync();
-                TempData["Error"] = $"GET /api/tamano/{id} -> {(int)resp.StatusCode} {resp.ReasonPhrase}. Respuesta: {body}";
+                TempData["Error"] = r.StatusCode == System.Net.HttpStatusCode.NotFound
+                    ? "El tamaño no existe o ya fue eliminado."
+                    : $"No se pudo obtener el tamaño (código {(int)r.StatusCode}).";
                 return RedirectToAction(nameof(Index));
             }
 
-            var json = await resp.Content.ReadAsStringAsync();
-            var model = JsonSerializer.Deserialize<Tamano>(
-                json,
-                new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
-            );
+            var model = await r.Content.ReadFromJsonAsync<Tamano>(
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-            return View(model); // Views/Tamano/Eliminar.cshtml
+            bool enUso = false;
+            try
+            {
+                int pagina = 1;
+                const int pageSize = 50;
+                while (true)
+                {
+                    var a = await client.GetAsync($"/api/animal?pagina={pagina}&pageSize={pageSize}");
+                    if (!a.IsSuccessStatusCode) break;
+
+                    var animales = await a.Content.ReadFromJsonAsync<List<AnimalMin>>();
+                    if (animales == null || animales.Count == 0) break;
+
+                    if (animales.Any(x => x.id_tamano == id))
+                    {
+                        enUso = true;
+                        break;
+                    }
+
+                    if (animales.Count < pageSize) break;
+                    pagina++;
+                    if (pagina > 2000) break;
+                }
+            }
+            catch { enUso = false; }
+
+            ViewBag.EnUso = enUso;
+            return View(model!);
         }
 
-        // POST: /Tamano/Eliminar/5
+        // Para leer la respuesta de /api/animal como lista 
+        private class AnimalMin
+        {
+            public int id_animal { get; set; }
+            public int id_tamano { get; set; }
+        }
+
+
+        // POST: /Tamano/Eliminar/
         [HttpPost, ValidateAntiForgeryToken, ActionName("Eliminar")]
         public async Task<IActionResult> EliminarConfirmado(int id)
         {
             var client = _http.CreateClient("Api");
             var resp = await client.DeleteAsync($"/api/tamano/{id}");
+            var body = await resp.Content.ReadAsStringAsync();
 
-            if (resp.StatusCode == System.Net.HttpStatusCode.Conflict ||
-                resp.StatusCode == System.Net.HttpStatusCode.BadRequest)
+            if (resp.IsSuccessStatusCode)
             {
-                var body = await resp.Content.ReadAsStringAsync();
-                TempData["Error"] = "No se puede eliminar el tamaño porque está en uso.";
-                if (!string.IsNullOrWhiteSpace(body)) TempData["ApiDetail"] = body;
-                return RedirectToAction("Eliminar", new { id });
+                TempData["Ok"] = "Tamaño eliminado correctamente.";
+                return RedirectToAction(nameof(Index));
             }
 
-            if (!resp.IsSuccessStatusCode)
+            var r = await client.GetAsync($"/api/tamano/{id}");
+            if (!r.IsSuccessStatusCode)
             {
-                var body = await resp.Content.ReadAsStringAsync();
-                TempData["Error"] = $"DELETE /api/tamano/{id} -> {(int)resp.StatusCode} {resp.ReasonPhrase}. Respuesta: {body}";
-                return RedirectToAction("Eliminar", new { id });
+                TempData["Error"] = "No se pudo eliminar el tamaño. Intentalo nuevamente.";
+                return RedirectToAction(nameof(Index));
+            }
+            var model = await r.Content.ReadFromJsonAsync<Tamano>(
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+            bool esFk = resp.StatusCode == System.Net.HttpStatusCode.Conflict
+                        || (int)resp.StatusCode == 422
+                        || ((int)resp.StatusCode == 500
+                            && (body?.Contains("547") == true
+                                || body?.Contains("REFERENCE", StringComparison.OrdinalIgnoreCase) == true
+                                || body?.Contains("FK__", StringComparison.OrdinalIgnoreCase) == true));
+
+            if (esFk)
+            {
+                ViewBag.EnUso = true;
+                TempData["Error"] = "No se puede eliminar el tamaño porque está en uso por uno o más animales.";
+                return View("Eliminar", model!);
             }
 
-            TempData["Ok"] = "Tamaño eliminado correctamente.";
-            return RedirectToAction(nameof(Index));
+            ViewBag.EnUso = false;
+            TempData["Error"] = "No se pudo eliminar el tamaño. Intentalo nuevamente.";
+            return View("Eliminar", model!);
         }
     }
 }

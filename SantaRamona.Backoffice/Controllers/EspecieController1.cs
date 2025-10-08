@@ -70,7 +70,7 @@ namespace SantaRamona.Backoffice.Controllers
                 return View(model); // me quedo en pantalla con el error
             }
 
-            // ✅ Éxito: me quedo en la misma pantalla para poder crear otra
+            //me quedo en la misma pantalla para poder crear otra
             ViewBag.Ok = "Especie creada correctamente.";
             ModelState.Clear();                  // limpia validaciones
             return View(new Especie());          // deja el form vacío
@@ -101,7 +101,7 @@ namespace SantaRamona.Backoffice.Controllers
                 new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true }
             );
 
-            // ✅ Mostrar mensaje de éxito si viene del POST
+            //Mostrar mensaje de éxito si viene del POST
             if (TempData["Ok"] is string ok) ViewBag.Ok = ok;
 
             return View(model);
@@ -135,35 +135,66 @@ namespace SantaRamona.Backoffice.Controllers
                 return View(model);
             }
 
-            // ✅ Igual que en Raza: seteo mensaje y redirijo al mismo Modificar (mismo ID)
+            // seteo mensaje y redirijo al mismo Modificar (mismo ID)
             TempData["Ok"] = "Especie actualizada correctamente.";
             return RedirectToAction(nameof(Modificar), new { id = id_especie });
         }
-
-
         // GET: /Especie/Eliminar/5
         [HttpGet]
         public async Task<IActionResult> Eliminar(int id)
         {
             var client = _http.CreateClient("Api");
-            var resp = await client.GetAsync($"/api/especie/{id}");
 
-            if (resp.StatusCode == System.Net.HttpStatusCode.NotFound)
+            var r = await client.GetAsync($"/api/especie/{id}");
+            if (!r.IsSuccessStatusCode)
             {
-                TempData["Error"] = "La especie no existe o ya fue eliminada.";
-                return RedirectToAction(nameof(Index));
-            }
-            if (!resp.IsSuccessStatusCode)
-            {
-                var body = await resp.Content.ReadAsStringAsync();
-                TempData["Error"] = $"GET /api/especie/{id} -> {(int)resp.StatusCode} {resp.ReasonPhrase}. Respuesta: {body}";
+                TempData["Error"] = r.StatusCode == System.Net.HttpStatusCode.NotFound
+                    ? "La especie no existe o ya fue eliminada."
+                    : $"No se pudo obtener la especie (código {(int)r.StatusCode}).";
                 return RedirectToAction(nameof(Index));
             }
 
-            var json = await resp.Content.ReadAsStringAsync();
-            var model = JsonSerializer.Deserialize<Especie>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-            return View(model);
+            var model = await r.Content.ReadFromJsonAsync<Especie>(
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+            // ¿Existe algún animal con esta especie?
+            bool enUso = false;
+            try
+            {
+                int pagina = 1;
+                const int pageSize = 50;
+                while (true)
+                {
+                    var a = await client.GetAsync($"/api/animal?pagina={pagina}&pageSize={pageSize}");
+                    if (!a.IsSuccessStatusCode) break;
+
+                    var animales = await a.Content.ReadFromJsonAsync<List<AnimalMin>>();
+                    if (animales == null || animales.Count == 0) break;
+
+                    if (animales.Any(x => x.id_especie == id))
+                    {
+                        enUso = true;
+                        break;
+                    }
+
+                    if (animales.Count < pageSize) break;
+                    pagina++;
+                    if (pagina > 2000) break;
+                }
+            }
+            catch { enUso = false; }
+
+            ViewBag.EnUso = enUso;
+            return View(model!);
         }
+
+        // Clase 
+        private class AnimalMin
+        {
+            public int id_animal { get; set; }
+            public int id_especie { get; set; }
+        }
+
 
         // POST: /Especie/Eliminar/5
         [HttpPost, ValidateAntiForgeryToken, ActionName("Eliminar")]
@@ -171,24 +202,41 @@ namespace SantaRamona.Backoffice.Controllers
         {
             var client = _http.CreateClient("Api");
             var resp = await client.DeleteAsync($"/api/especie/{id}");
+            var body = await resp.Content.ReadAsStringAsync();
 
-            if (resp.StatusCode == System.Net.HttpStatusCode.Conflict || resp.StatusCode == System.Net.HttpStatusCode.BadRequest)
+            if (resp.IsSuccessStatusCode)
             {
-                var body = await resp.Content.ReadAsStringAsync();
-                TempData["Error"] = "No se puede eliminar la especie porque está en uso.";
-                if (!string.IsNullOrWhiteSpace(body)) TempData["ApiDetail"] = body;
-                return RedirectToAction("Eliminar", new { id });
+                TempData["Ok"] = "Especie eliminada correctamente.";
+                return RedirectToAction(nameof(Index));
             }
 
-            if (!resp.IsSuccessStatusCode)
+            // Volvemos a cargar el modelo para quedarnos en la misma vista
+            var r = await client.GetAsync($"/api/especie/{id}");
+            if (!r.IsSuccessStatusCode)
             {
-                var body = await resp.Content.ReadAsStringAsync();
-                TempData["Error"] = $"DELETE /api/especie/{id} -> {(int)resp.StatusCode} {resp.ReasonPhrase}. Respuesta: {body}";
-                return RedirectToAction("Eliminar", new { id });
+                TempData["Error"] = "No se pudo eliminar la especie. Intentalo nuevamente.";
+                return RedirectToAction(nameof(Index));
+            }
+            var model = await r.Content.ReadFromJsonAsync<Especie>(
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+            bool esFk = resp.StatusCode == System.Net.HttpStatusCode.Conflict
+                        || (int)resp.StatusCode == 422
+                        || ((int)resp.StatusCode == 500
+                            && (body?.Contains("547") == true
+                                || body?.Contains("REFERENCE", StringComparison.OrdinalIgnoreCase) == true
+                                || body?.Contains("FK__", StringComparison.OrdinalIgnoreCase) == true));
+
+            if (esFk)
+            {
+                ViewBag.EnUso = true;
+                TempData["Error"] = "No se puede eliminar la especie porque está en uso por uno o más animales.";
+                return View("Eliminar", model!);
             }
 
-            TempData["Ok"] = "Especie eliminada correctamente.";
-            return RedirectToAction(nameof(Index));
+            ViewBag.EnUso = false;
+            TempData["Error"] = "No se pudo eliminar la especie. Intentalo nuevamente.";
+            return View("Eliminar", model!);
         }
     }
 }

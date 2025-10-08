@@ -36,7 +36,7 @@ app.UseRouting();
 app.MapGet("/", () => Results.Redirect("/Home/Index"));
 
 
-// Ruta por defecto (podés dejarla como está o cambiarla luego)
+// Ruta por defecto 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");

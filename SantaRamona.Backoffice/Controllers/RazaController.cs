@@ -35,7 +35,7 @@ namespace SantaRamona.Backoffice.Controllers
         public IActionResult Crear()
         {
             if (TempData["Ok"] is string ok)
-                ViewBag.MensajeExito = ok;   // <- para mostrar el cartel en la vista
+                ViewBag.MensajeExito = ok;   //para mostrar el cartel en la vista
 
             return View(new SantaRamona.Backoffice.Models.Raza());
         }
@@ -68,11 +68,11 @@ namespace SantaRamona.Backoffice.Controllers
                 return View(model);
             }
 
-            // ✅ Mostrar mensaje y quedarse en Crear para seguir cargando
+            //Mostrar mensaje y quedarse en Crear para seguir cargando
             TempData["Ok"] = "Raza creada correctamente.";
             return RedirectToAction(nameof(Crear));
         }
-        // GET: /Raza/Editar/{id}
+        // GET: /Raza/Editar
         [HttpGet]
         public async Task<IActionResult> Modificar(int id)
         {
@@ -127,66 +127,116 @@ namespace SantaRamona.Backoffice.Controllers
             TempData["Ok"] = "Raza actualizada correctamente.";
             return RedirectToAction(nameof(Modificar), new { id = id_raza });
         }
-        // GET: /Raza/Eliminar/5  -> Muestra confirmación
+        // GET: /Raza/Eliminar/
         [HttpGet]
         public async Task<IActionResult> Eliminar(int id)
         {
             var client = _http.CreateClient("Api");
 
-            var resp = await client.GetAsync($"/api/raza/{id}");
-            if (resp.StatusCode == System.Net.HttpStatusCode.NotFound)
+            var r = await client.GetAsync($"/api/raza/{id}");
+            if (!r.IsSuccessStatusCode)
             {
-                TempData["Error"] = "La raza no existe o ya fue eliminada.";
-                return RedirectToAction(nameof(Index));
-            }
-            if (!resp.IsSuccessStatusCode)
-            {
-                var body = await resp.Content.ReadAsStringAsync();
-                TempData["Error"] = $"GET /api/raza/{id} -> {(int)resp.StatusCode} {resp.ReasonPhrase}. Respuesta: {body}";
+                TempData["Error"] = r.StatusCode == System.Net.HttpStatusCode.NotFound
+                    ? "La raza no existe o ya fue eliminada."
+                    : $"No se pudo obtener la raza (código {(int)r.StatusCode}).";
                 return RedirectToAction(nameof(Index));
             }
 
-            var json = await resp.Content.ReadAsStringAsync();
-            var model = JsonSerializer.Deserialize<Raza>(json, new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            });
+            var model = await r.Content.ReadFromJsonAsync<Raza>(new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-            return View(model); // Views/Raza/Eliminar.cshtml
+            //chequeo real: existe algún animal con esta raza
+            bool enUso = false;
+            try
+            {
+                int pagina = 1;
+                const int pageSize = 50; // podés subir/bajar este tamaño si querés
+                while (true)
+                {
+                    var pageResp = await client.GetAsync($"/api/animal?pagina={pagina}&pageSize={pageSize}");
+                    if (!pageResp.IsSuccessStatusCode)
+                    {
+                        // si falla la consulta, no marcamos enUso para no bloquear indebidamente
+                        break;
+                    }
+
+                    var animales = await pageResp.Content.ReadFromJsonAsync<List<AnimalMin>>();
+                    if (animales == null || animales.Count == 0)
+                    {
+                        // no hay más páginas
+                        break;
+                    }
+
+                    if (animales.Any(a => a.id_raza == id))
+                    {
+                        enUso = true;
+                        break;
+                    }
+
+                    // si la página vino incompleta, asumimos fin
+                    if (animales.Count < pageSize)
+                        break;
+
+                    pagina++;
+                    if (pagina > 2000) break; // corta por las dudas
+                }
+            }
+            catch
+            {
+                enUso = false; // ante error de red, no bloquear la UI
+            }
+
+            ViewBag.EnUso = enUso;
+            return View(model!);
         }
-        // POST: /Raza/Eliminar/5  -> Ejecuta el borrado
+
+// Clase para leer solo lo necesario del JSON de Animal
+private class AnimalMin
+        {
+            public int id_animal { get; set; }
+            public int id_raza { get; set; }
+        }
+
+        // POST: /Raza/Eliminar/5
         [HttpPost, ValidateAntiForgeryToken, ActionName("Eliminar")]
         public async Task<IActionResult> EliminarConfirmado(int id)
         {
             var client = _http.CreateClient("Api");
-
             var resp = await client.DeleteAsync($"/api/raza/{id}");
+            var body = await resp.Content.ReadAsStringAsync();
 
-            if (resp.StatusCode == System.Net.HttpStatusCode.Conflict)
+            if (resp.IsSuccessStatusCode)
             {
-                var body = await resp.Content.ReadAsStringAsync();
-                TempData["Error"] = "No se puede eliminar la raza porque está en uso en otros registros.";
-                if (!string.IsNullOrWhiteSpace(body)) TempData["ApiDetail"] = body;
-                return RedirectToAction("Eliminar", new { id });
+                TempData["Ok"] = "Raza eliminada correctamente.";
+                return RedirectToAction(nameof(Index));
             }
 
-            if (resp.StatusCode == System.Net.HttpStatusCode.BadRequest)
+            // Volvemos a cargar el modelo para quedarnos en la misma vista
+            var r = await client.GetAsync($"/api/raza/{id}");
+            if (!r.IsSuccessStatusCode)
             {
-                var body = await resp.Content.ReadAsStringAsync();
-                TempData["Error"] = "No se puede eliminar la raza. El backend informó que está en uso o no cumple las condiciones.";
-                if (!string.IsNullOrWhiteSpace(body)) TempData["ApiDetail"] = body;
-                return RedirectToAction("Eliminar", new { id });
+                TempData["Error"] = "No se pudo eliminar la raza. Intentalo nuevamente.";
+                return RedirectToAction(nameof(Index));
+            }
+            var model = await r.Content.ReadFromJsonAsync<Raza>(new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+            bool esFk = resp.StatusCode == System.Net.HttpStatusCode.Conflict
+                        || (int)resp.StatusCode == 422
+                        || ((int)resp.StatusCode == 500
+                            && (body?.Contains("547") == true
+                                || body?.Contains("REFERENCE", StringComparison.OrdinalIgnoreCase) == true
+                                || body?.Contains("FK__", StringComparison.OrdinalIgnoreCase) == true));
+
+            if (esFk)
+            {
+                ViewBag.EnUso = true;
+                TempData["Error"] = "No se puede eliminar la raza porque está en uso por uno o más animales.";
+                return View("Eliminar", model!);
             }
 
-            if (!resp.IsSuccessStatusCode)
-            {
-                var body = await resp.Content.ReadAsStringAsync();
-                TempData["Error"] = $"DELETE /api/raza/{id} -> {(int)resp.StatusCode} {resp.ReasonPhrase}. Respuesta: {body}";
-                return RedirectToAction("Eliminar", new { id });
-            }
-
-            TempData["Ok"] = "Raza eliminada correctamente.";
-            return RedirectToAction(nameof(Index));
+            // Error no-FK: mostramos error pero dejamos visible el botón Eliminar
+            ViewBag.EnUso = false;
+            TempData["Error"] = "No se pudo eliminar la raza. Intentalo nuevamente.";
+            return View("Eliminar", model!);
         }
     }
 }

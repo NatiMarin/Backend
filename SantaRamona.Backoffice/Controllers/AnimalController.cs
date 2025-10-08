@@ -174,7 +174,7 @@ namespace SantaRamona.Backoffice.Controllers
         }
 
         // ===================== DETALLE (PARA MODAL EN INDEX) =====================
-        // GET: /Animal/Detalle/5  -> devuelve un PartialView con el detalle del animal
+        // GET: /Animal/Detalle/5  
         [HttpGet]
         public async Task<IActionResult> Detalle(int id)
         {
@@ -209,7 +209,7 @@ namespace SantaRamona.Backoffice.Controllers
             ViewBag.Estados = await ToSelectList<Estado_Animal>(tEst.Result, x => x.id_estadoAnimal, x => x.estado, estSel);
         }
 
-        // 👉 NUEVO: solo diccionarios para la vista parcial de detalle
+        // NUEVO: solo diccionarios para la vista parcial de detalle
         private async Task CargarDiccionariosBasicos()
         {
             var client = _http.CreateClient("Api");
@@ -355,7 +355,7 @@ namespace SantaRamona.Backoffice.Controllers
             {
                 var body = await respDel.Content.ReadAsStringAsync();
 
-                // Mensaje amable si la API devuelve conflicto por FK
+                // Mensaje si la API devuelve conflicto por FK
                 if (respDel.StatusCode == System.Net.HttpStatusCode.Conflict ||
                     respDel.StatusCode == System.Net.HttpStatusCode.BadRequest ||
                     (int)respDel.StatusCode == 422)

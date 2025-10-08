@@ -10,6 +10,7 @@ namespace SantaRamona.Backoffice.Controllers
         private readonly IHttpClientFactory _http;
         public EstadoController(IHttpClientFactory http) => _http = http;
 
+        // GET: /Estado Animal
         [HttpGet]
         public async Task<IActionResult> Index()
         {
@@ -33,9 +34,11 @@ namespace SantaRamona.Backoffice.Controllers
             return View(data);
         }
 
+        // GET: /Estado Animal/Crear/
         [HttpGet]
         public IActionResult Crear() => View(new Estado_Animal());
 
+        // POST: /Estado Aniaml/Crear
         [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> Crear([FromForm] string estado)
         {
@@ -62,6 +65,7 @@ namespace SantaRamona.Backoffice.Controllers
             return View(new Estado_Animal());
         }
 
+        // GET: /Estado Animal/Modificar/
         [HttpGet]
         public async Task<IActionResult> Modificar(int id)
         {
@@ -94,6 +98,7 @@ namespace SantaRamona.Backoffice.Controllers
             return View(model); // Vista Modificar.cshtml
         }
 
+        // GET: /Estado Animal/Eliminar/5
         [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> Modificar([FromForm] Estado_Animal model)
         {
@@ -124,57 +129,105 @@ namespace SantaRamona.Backoffice.Controllers
             return RedirectToAction(nameof(Modificar), new { id = model.id_estadoAnimal });
         }
 
-
         [HttpGet]
         public async Task<IActionResult> Eliminar(int id)
         {
             var client = _http.CreateClient("Api");
-            var resp = await client.GetAsync($"/api/estadoanimal/{id}");
 
-            if (resp.StatusCode == System.Net.HttpStatusCode.NotFound)
+            // Traer el estado a eliminar
+            var r = await client.GetAsync($"/api/estadoanimal/{id}");
+            if (!r.IsSuccessStatusCode)
             {
-                TempData["Error"] = "El estado no existe o ya fue eliminado.";
-                return RedirectToAction(nameof(Index));
-            }
-            if (!resp.IsSuccessStatusCode)
-            {
-                var body = await resp.Content.ReadAsStringAsync();
-                TempData["Error"] = $"GET /api/estadoanimal/{id} -> {(int)resp.StatusCode} {resp.ReasonPhrase}. Respuesta: {body}";
+                TempData["Error"] = r.StatusCode == System.Net.HttpStatusCode.NotFound
+                    ? "El estado no existe o ya fue eliminado."
+                    : $"No se pudo obtener el estado (código {(int)r.StatusCode}).";
                 return RedirectToAction(nameof(Index));
             }
 
-            var json = await resp.Content.ReadAsStringAsync();
-            var model = JsonSerializer.Deserialize<Estado_Animal>(json,
+            var model = await r.Content.ReadFromJsonAsync<Estado_Animal>(
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-            return View(model);
+            // ¿Hay algún animal con este estado? 
+            bool enUso = false;
+            try
+            {
+                int pagina = 1;
+                const int pageSize = 50;
+                while (true)
+                {
+                    var a = await client.GetAsync($"/api/animal?pagina={pagina}&pageSize={pageSize}");
+                    if (!a.IsSuccessStatusCode) break;
+
+                    var animales = await a.Content.ReadFromJsonAsync<List<AnimalMin>>();
+                    if (animales == null || animales.Count == 0) break;
+
+                    if (animales.Any(x => x.id_estado == id))
+                    {
+                        enUso = true;
+                        break;
+                    }
+
+                    if (animales.Count < pageSize) break;
+                    pagina++;
+                    if (pagina > 2000) break;
+                }
+            }
+            catch { enUso = false; }
+
+            ViewBag.EnUso = enUso;
+            return View(model!);
         }
 
+        // Solo para leer la respuesta de /api/animal como lista con los campos necesarios
+        private class AnimalMin
+        {
+            public int id_animal { get; set; }
+            public int id_estado { get; set; }
+        }
+
+        // POST: /Especie/Eliminar/5
         [HttpPost, ValidateAntiForgeryToken, ActionName("Eliminar")]
         public async Task<IActionResult> EliminarConfirmado(int id)
         {
             var client = _http.CreateClient("Api");
             var resp = await client.DeleteAsync($"/api/estadoanimal/{id}");
+            var body = await resp.Content.ReadAsStringAsync();
 
-            if (resp.StatusCode == System.Net.HttpStatusCode.Conflict ||
-                resp.StatusCode == System.Net.HttpStatusCode.BadRequest ||
-                (int)resp.StatusCode == 422)
+            if (resp.IsSuccessStatusCode)
             {
-                var body = await resp.Content.ReadAsStringAsync();
-                TempData["Error"] = "No se puede eliminar el estado porque está en uso.";
-                if (!string.IsNullOrWhiteSpace(body)) TempData["ApiDetail"] = body;
-                return RedirectToAction("Eliminar", new { id });
+                TempData["Ok"] = "Estado eliminado correctamente.";
+                return RedirectToAction(nameof(Index));
             }
 
-            if (!resp.IsSuccessStatusCode)
+            // Volvemos a cargar el modelo para quedarnos en la misma vista
+            var r = await client.GetAsync($"/api/estadoanimal/{id}");
+            if (!r.IsSuccessStatusCode)
             {
-                var body = await resp.Content.ReadAsStringAsync();
-                TempData["Error"] = $"DELETE /api/estadoanimal/{id} -> {(int)resp.StatusCode} {resp.ReasonPhrase}. Respuesta: {body}";
-                return RedirectToAction("Eliminar", new { id });
+                TempData["Error"] = "No se pudo eliminar el estado. Intentalo nuevamente.";
+                return RedirectToAction(nameof(Index));
+            }
+            var model = await r.Content.ReadFromJsonAsync<Estado_Animal>(
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+            // Si la API devolvió error mostramos bloqueo
+            bool esFk = resp.StatusCode == System.Net.HttpStatusCode.Conflict
+                        || (int)resp.StatusCode == 422
+                        || ((int)resp.StatusCode == 500
+                            && (body?.Contains("547") == true
+                                || body?.Contains("REFERENCE", StringComparison.OrdinalIgnoreCase) == true
+                                || body?.Contains("FK__", StringComparison.OrdinalIgnoreCase) == true));
+
+            if (esFk)
+            {
+                ViewBag.EnUso = true;
+                TempData["Error"] = "No se puede eliminar el estado porque está en uso por uno o más animales.";
+                return View("Eliminar", model!);
             }
 
-            TempData["Ok"] = "Estado eliminado correctamente.";
-            return RedirectToAction(nameof(Index));
+            // Error no relacionado con FK → dejamos visible el botón
+            ViewBag.EnUso = false;
+            TempData["Error"] = "No se pudo eliminar el estado. Intentalo nuevamente.";
+            return View("Eliminar", model!);
         }
     }
 }
