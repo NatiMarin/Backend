@@ -1,8 +1,68 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Inicio";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container mt-4">
+    <h1 class="text-center fw-bold" style="color:#2FA8A2; letter-spacing:.5px;">
+        MÓDULOS
+    </h1>
+
+    <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 g-3 mt-3">
+
+        <!-- ANIMALES (activo) -->
+        <div class="col">
+            <a asp-controller="Animal" asp-action="Index" class="text-decoration-none">
+                <div class="p-3 text-center shadow-sm tile">
+                    <div class="d-inline-flex align-items-center justify-content-center mb-2"
+                         style="width:60px;height:60px;border-radius:14px;background:#E6F6F5;">
+                        <span style="font-size:30px;">🐾</span>
+                    </div>
+                    <div class="fw-semibold" style="color:#2FA8A2;">Animales</div>
+                </div>
+            </a>
+        </div>
+
+        <!-- PERSONAS (placeholder) -->
+        <div class="col">
+            <div class="p-3 text-center shadow-sm tile tile-off" title="Próximamente">
+                <div class="d-inline-flex align-items-center justify-content-center mb-2"
+                     style="width:60px;height:60px;border-radius:14px;background:#E6F6F5;">
+                    <span style="font-size:30px;">👤</span>
+                </div>
+                <div class="fw-semibold" style="color:#9aa3a3;">Personas</div>
+                <div class="small text-muted">En desarrollo</div>
+            </div>
+        </div>
+
+        <!-- FORMULARIOS (placeholder) -->
+        <div class="col">
+            <div class="p-3 text-center shadow-sm tile tile-off" title="Próximamente">
+                <div class="d-inline-flex align-items-center justify-content-center mb-2"
+                     style="width:60px;height:60px;border-radius:14px;background:#E6F6F5;">
+                    <span style="font-size:30px;">📝</span>
+                </div>
+                <div class="fw-semibold" style="color:#9aa3a3;">Formularios</div>
+                <div class="small text-muted">En desarrollo</div>
+            </div>
+        </div>
+
+    </div>
 </div>
+
+<style>
+    .tile {
+        border: 1px solid #E6F6F5;
+        border-radius: 14px;
+        background: #fff;
+        transition: transform .08s ease;
+    }
+
+        .tile:hover {
+            transform: translateY(-1px);
+        }
+
+    .tile-off {
+        opacity: .65;
+        cursor: default;
+    }
+</style>

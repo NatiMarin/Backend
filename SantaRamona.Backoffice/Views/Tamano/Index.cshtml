@@ -1,4 +1,8 @@
 ﻿@model IEnumerable<SantaRamona.Backoffice.Models.Tamano>
+@{
+    await Html.RenderPartialAsync("_AnimalTopNav");
+}
+
 
 @{
     ViewData["Title"] = "Tamaños";
@@ -148,7 +152,7 @@
                                 <a asp-controller="Tamano"
                                    asp-action="Eliminar"
                                    asp-route-id="@item.id_tamano"
-                                   class="btn-danger">
+                                   class="btn-primary">
                                     Eliminar
                                 </a>
                             </div>
