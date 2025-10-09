@@ -1,11 +1,11 @@
-﻿@model SantaRamona.Backoffice.Models.Especie
+﻿@model SantaRamona.Backoffice.Models.Estado_Usuario
 @{
-    ViewData["Title"] = "Eliminar especie";
+    ViewData["Title"] = "Eliminar Estado Usuario";
 }
 
 <div class="container mt-4">
     <h1 class="text-center fw-bold" style="color:#2FA8A2; letter-spacing:.5px;">
-        ELIMINAR ESPECIE
+        ELIMINAR ESTADO USUARIO
     </h1>
 
     @if (TempData["Error"] is string err)
@@ -49,11 +49,11 @@
 
             <div class="mb-3">
                 <label class="form-label">Identificación</label>
-                <input class="form-control" value="@Model.id_especie" disabled />
+                <input class="form-control" value="@Model.id_estadoUsuario" disabled />
             </div>
             <div class="mb-3">
                 <label class="form-label">Descripción</label>
-                <input class="form-control" value="@Model.especie" disabled />
+                <input class="form-control" value="@Model.descripcion" disabled />
             </div>
         </div>
     </div>
@@ -68,7 +68,7 @@
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
                 <div class="modal-body" style="color:#000;">
-                    ¿Realmente desea eliminar esta especie?
+                    ¿Realmente desea eliminar este estado?
                 </div>
                 <div class="modal-footer" style="border-top:none;">
                     <button type="button" class="btn" data-bs-dismiss="modal"
@@ -78,7 +78,7 @@
 
                     <form asp-action="Eliminar" method="post" class="d-inline">
                         @Html.AntiForgeryToken()
-                        <input type="hidden" name="id" value="@Model.id_especie" />
+                        <input type="hidden" name="id" value="@Model.id_estadoUsuario" />
                         <button type="submit" class="btn"
                                 style="background:#2FA8A2; color:#fff; border-radius:10px; padding:.4rem 1rem;">
                             Sí, eliminar

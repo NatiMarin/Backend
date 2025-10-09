@@ -1,0 +1,73 @@
+﻿@model SantaRamona.Backoffice.Models.Usuario
+@{
+    // Diccionario para mostrar la descripción del estado (cargado por el controller)
+    var estados = ViewBag.Estados as Dictionary<int, string> ?? new();
+
+    string Txt(Dictionary<int, string> d, int id) => d.TryGetValue(id, out var v) ? v : $"#{id}";
+}
+
+<div class="container-fluid">
+    <div class="row g-3">
+        <div class="col-md-4">
+            <label class="form-label fw-semibold">Código</label>
+            <div class="form-control" readonly>@Model.id_usuario</div>
+        </div>
+
+        <div class="col-md-4">
+            <label class="form-label fw-semibold">Nombre</label>
+            <div class="form-control" readonly>@Model.nombre</div>
+        </div>
+
+        <div class="col-md-4">
+            <label class="form-label fw-semibold">Apellido</label>
+            <div class="form-control" readonly>@Model.apellido</div>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label fw-semibold">Email</label>
+            <div class="form-control" readonly>@Model.email</div>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label fw-semibold">Clave</label>
+            <div class="form-control" readonly>@Model.clave</div>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label fw-semibold">Dirección</label>
+            <div class="form-control" readonly>@Model.direccion</div>
+        </div>
+
+        <div class="col-md-3">
+            <label class="form-label fw-semibold">Altura</label>
+            <div class="form-control" readonly>@Model.altura</div>
+        </div>
+
+        <div class="col-md-3">
+            <label class="form-label fw-semibold">Departamento</label>
+            <div class="form-control" readonly>
+                @(!string.IsNullOrWhiteSpace(Model.departamento) ? Model.departamento : "—")
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label fw-semibold">Teléfono 1</label>
+            <div class="form-control" readonly>@Model.telefono1</div>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label fw-semibold">Teléfono 2</label>
+            <div class="form-control" readonly>@Model.telefono2</div>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label fw-semibold">Fecha de Alta</label>
+            <div class="form-control" readonly>@Model.fechaAlta.ToString("dd/MM/yyyy")</div>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label fw-semibold">Estado</label>
+            <div class="form-control" readonly>@Txt(estados, Model.id_estadoUsuario)</div>
+        </div>
+    </div>
+</div>

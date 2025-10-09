@@ -14,7 +14,7 @@ namespace SantaRamona.Models
         public string nombre { get; set; }
         public string apellido { get; set; }
         public string direccion { get; set; }
-        public string altura { get; set; }
+        public int altura { get; set; }
         public string departamento { get; set; }
         public int telefono1 { get; set; }
         public int telefono2 { get; set; }

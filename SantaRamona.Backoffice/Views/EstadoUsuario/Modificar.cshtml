@@ -1,7 +1,6 @@
-﻿@model SantaRamona.Backoffice.Models.Especie
-
+﻿@model SantaRamona.Backoffice.Models.Estado_Usuario
 @{
-    ViewData["Title"] = "Modificar Especie";
+    ViewData["Title"] = "Modificar Estado Usuario";
 }
 
 <style>
@@ -139,7 +138,7 @@
 </style>
 
 <div class="main-container">
-    <h2 class="form-title">Modificar Especie</h2>
+    <h2 class="form-title">Modificar Estado Usuario</h2>
 
     @if (ViewBag.Ok != null)
     {
@@ -151,7 +150,7 @@
     }
 
     <div class="card">
-        <div class="card-header">Datos de la Especie</div>
+        <div class="card-header">Datos del Estado</div>
         <div class="card-body">
             <div class="toolbar">
                 <a asp-action="Index" class="btn btn-outline">← Volver al listado</a>
@@ -163,11 +162,11 @@
             </div>
 
             <form id="frm-modificar" asp-action="Modificar" method="post">
-                <input type="hidden" asp-for="id_especie" />
+                <input type="hidden" asp-for="id_estadoUsuario" />
                 <div style="margin-bottom:1rem;">
-                    <label asp-for="especie">Descripción</label>
-                    <input asp-for="especie" type="text" />
-                    <span asp-validation-for="especie" class="field-error"></span>
+                    <label asp-for="descripcion">Descripción</label>
+                    <input asp-for="descripcion" type="text" autocomplete="off" />
+                    <span asp-validation-for="descripcion" class="field-error"></span>
                 </div>
             </form>
         </div>

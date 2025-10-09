@@ -20,18 +20,26 @@ namespace SantaRamona.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Usuario>>> GetAll([FromQuery] int pagina = 1, [FromQuery] int pageSize = 20)
         {
-            if (pagina < 1) pagina = 1;
-            if (pageSize < 1 || pageSize > 200) pageSize = 20;
+            try
+            {
+                if (pagina < 1) pagina = 1;
+                if (pageSize < 1 || pageSize > 200) pageSize = 20;
 
-            var data = await _context.Usuario
-                .AsNoTracking()
-                .OrderBy(u => u.id_usuario)
-                .Skip((pagina - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
+                var data = await _context.Usuario
+                    .AsNoTracking()
+                    .OrderBy(u => u.id_usuario)
+                    .Skip((pagina - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToListAsync();
 
-            return Ok(data);
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error interno: {ex.Message} | Inner: {ex.InnerException?.Message}");
+            }
         }
+
 
         // GET: api/usuario/5
         [HttpGet("{id:int}")]
@@ -57,7 +65,14 @@ namespace SantaRamona.Controllers
                 return BadRequest("id_estadoUsuario debe ser mayor a 0.");
 
             _context.Usuario.Add(dto);
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex) when (ex.InnerException?.Message.Contains("UQ__USUARIO") == true)
+            {
+                return BadRequest("El email ya está registrado. Ingrese otro diferente.");
+            }
 
             return CreatedAtAction(nameof(GetById), new { id = dto.id_usuario }, dto);
         }

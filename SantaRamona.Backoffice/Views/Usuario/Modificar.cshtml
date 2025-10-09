@@ -1,0 +1,32 @@
+﻿@model SantaRamona.Backoffice.Models.Estado_Usuario
+@{
+    ViewData["Title"] = "Modificar Estado de Usuario";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+@if (ViewBag.ApiError != null)
+{
+    <div class="alert alert-danger">@ViewBag.ApiError</div>
+}
+@if (ViewBag.Ok != null)
+{
+    <div class="alert alert-success">@ViewBag.Ok</div>
+}
+
+<form asp-action="Modificar" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="id_estadoUsuario" />
+    <div class="form-group">
+        <label asp-for="descripcion"></label>
+        <input asp-for="descripcion" class="form-control" />
+        <span asp-validation-for="descripcion" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary mt-2">Guardar</button>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

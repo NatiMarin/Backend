@@ -34,8 +34,9 @@ app.UseRouting();
 // app.UseAuthorization();
 
 // Ruta por defecto: Raza/Index
+
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Raza}/{action=Index}/{id?}");
+    pattern: "{controller=EstadoUsuario}/{action=Index}/{id?}");
 
 app.Run();

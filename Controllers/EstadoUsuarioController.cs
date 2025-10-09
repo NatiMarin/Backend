@@ -5,23 +5,32 @@ using SantaRamona.Data;
 
 namespace SantaRamona.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/Estado_Usuario")]
     [ApiController]
-    public class Estado_UsuarioController : ControllerBase
+    public class EstadoUsuarioController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
 
-        public Estado_UsuarioController(ApplicationDbContext context)
+        public EstadoUsuarioController(ApplicationDbContext context)
         {
             _context = context;
         }
-
-        // GET: api/Estado_Usuario
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Estado_Usuario>>> GetEstado_Usuarios()
+        public async Task<ActionResult<IEnumerable<object>>> GetAll()
         {
-            return await _context.Estado_Usuario.ToListAsync();
+            var estados = await _context.Estado_Usuario
+                .AsNoTracking()
+                .Select(e => new
+                {
+                    e.id_estadoUsuario,
+                    e.descripcion,
+                    enUso = _context.Usuario.Any(u => u.id_estadoUsuario == e.id_estadoUsuario)
+                })
+                .ToListAsync();
+
+            return Ok(estados);
         }
+       
 
         // GET: api/Estado_Usuario/5
         [HttpGet("{id}")]
@@ -77,13 +86,19 @@ namespace SantaRamona.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEstado_Usuario(int id)
         {
-            var estado_usuario = await _context.Estado_Usuario.FindAsync(id);
-            if (estado_usuario == null)
+            var entity = await _context.Estado_Usuario.FindAsync(id);
+            if (entity is null)
+                return NotFound("El estado no existe o ya fue eliminado.");
+
+            // 🔹 Verificar si algún usuario lo usa
+            bool enUso = await _context.Usuario.AnyAsync(u => u.id_estadoUsuario == id);
+            if (enUso)
             {
-                return NotFound();
+                // ⚠️ Devuelve un mensaje amigable (sin error técnico)
+                return Conflict("No puedes eliminar este estado porque está siendo usado por un usuario. Podés corregir los datos desde la sección Modificar.");
             }
 
-            _context.Estado_Usuario.Remove(estado_usuario);
+            _context.Estado_Usuario.Remove(entity);
             await _context.SaveChangesAsync();
 
             return NoContent();
