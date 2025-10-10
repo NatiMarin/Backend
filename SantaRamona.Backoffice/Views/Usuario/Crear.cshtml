@@ -1,323 +1,185 @@
 ﻿@model SantaRamona.Backoffice.Models.Usuario
-
 @{
     ViewData["Title"] = "Agregar Nuevo Usuario";
+    var estados = ViewBag.Estados as Dictionary<int, string> ?? new();
 }
 
-<link rel="stylesheet" href="~/css/usuarios-form.css" />
-
-@if (ViewBag.Ok != null)
-{
-    <div class="alert-ok">@ViewBag.Ok</div>
-}
-@if (ViewBag.ApiError != null)
-{
-    <div class="alert-error">@ViewBag.ApiError</div>
-}
-
-<div class="main-container">
-    <h2 class="form-title">Agregar Nuevo Usuario</h2>
+<div class="container mt-4">
+    <h1 class="text-center fw-bold" style="color:#40ADB0; letter-spacing:.5px;">
+        AGREGAR NUEVO USUARIO
+    </h1>
 
     @if (ViewBag.Ok != null)
     {
-        <div class="alert-ok">@ViewBag.Ok</div>
+        <div class="alert mt-3" style="background:#E6F6F5;border:1px solid #40ADB0;color:#155e59;border-radius:10px;">
+            @ViewBag.Ok
+        </div>
     }
     @if (ViewBag.ApiError != null)
     {
-        <div class="alert-error">@ViewBag.ApiError</div>
+        <div class="alert mt-3" style="background:#FFE3E3;border:1px solid #A71A6C;color:#A71A6C;border-radius:10px;">
+            @ViewBag.ApiError
+        </div>
     }
 
-    <div class="card">
-        <div class="card-header">Datos del Usuario</div>
-        <div class="card-body">
-
-            <div class="toolbar">
-                <a asp-action="Index" class="btn btn-outline">← Volver al listado</a>
-
-                <div class="form-actions">
-                    <button type="submit" form="frm-crear" class="btn btn-primary">Guardar</button>
-                    <button type="button" class="btn btn-primary" onclick="mostrarModalCancelar()">Cancelar</button>
-
-                </div>
+    <div class="card shadow-sm mt-3" style="border:1px solid #40ADB0;border-radius:14px;">
+        <div class="card-header d-flex justify-content-between align-items-center"
+             style="background:#40ADB0;color:#fff;border-top-left-radius:14px;border-top-right-radius:14px;">
+            <a asp-action="Index" class="btn"
+               style="border:1px solid #fff;color:#fff;border-radius:10px;">← Volver al listado</a>
+            <div class="d-flex gap-2">
+                <button type="submit" form="form-crear" class="btn"
+                        style="background:#fff;color:#40ADB0;border-radius:10px;padding:.5rem 1.25rem;">
+                    Guardar
+                </button>
+                <a asp-action="Index" class="btn"
+                   style="background:#fff;color:#40ADB0;border-radius:10px;padding:.5rem 1.25rem;">
+                    Cancelar
+                </a>
             </div>
+        </div>
 
-            <form id="frm-crear" asp-action="Crear" method="post">
-                <div style="margin-bottom:1rem;">
-                    <label asp-for="nombre"></label>
-                    <input asp-for="nombre" type="text" autocomplete="off" />
-                    <span asp-validation-for="nombre" class="field-error"></span>
-                </div>
+        <div class="card-body">
+            <form id="form-crear" asp-controller="Usuario" asp-action="Crear" method="post">
+                @Html.AntiForgeryToken()
 
-                <div style="margin-bottom:1rem;">
-                    <label asp-for="apellido"></label>
-                    <input asp-for="apellido" type="text" autocomplete="off" />
-                    <span asp-validation-for="apellido" class="field-error"></span>
-                </div>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label asp-for="nombre" class="form-label">Nombre</label>
+                        <input asp-for="nombre" class="form-control" />
+                        <span asp-validation-for="nombre" class="text-danger"></span>
+                    </div>
 
-                <div style="margin-bottom:1rem;">
-                    <label asp-for="email"></label>
-                    <input asp-for="email" type="email" autocomplete="off" />
-                    <span asp-validation-for="email" class="field-error"></span>
-                </div>
+                    <div class="col-md-6">
+                        <label asp-for="apellido" class="form-label">Apellido</label>
+                        <input asp-for="apellido" class="form-control" />
+                        <span asp-validation-for="apellido" class="text-danger"></span>
+                    </div>
 
-                <div style="margin-bottom:1rem;">
-                    <label asp-for="clave">Contraseña</label>
-                    <input asp-for="clave" type="password" autocomplete="off" />
-                    <span asp-validation-for="clave" class="field-error"></span>
-                </div>
+                    <div class="col-md-6">
+                        <label asp-for="email" class="form-label">Email</label>
+                        <input asp-for="email" class="form-control" type="email" />
+                        <span asp-validation-for="email" class="text-danger"></span>
+                    </div>
 
-                <div style="margin-bottom:1rem;">
-                    <label asp-for="direccion"></label>
-                    <input asp-for="direccion" type="text" autocomplete="off" />
-                    <span asp-validation-for="direccion" class="field-error"></span>
-                </div>
+                    <div class="col-md-6">
+                        <label asp-for="clave" class="form-label">Contraseña</label>
+                        <input asp-for="clave" class="form-control" type="password" />
+                        <span asp-validation-for="clave" class="text-danger"></span>
+                    </div>
 
-                <div style="margin-bottom:1rem;">
-                    <label asp-for="altura"></label>
-                    <input asp-for="altura" type="text" autocomplete="off" />
-                    <span asp-validation-for="altura" class="field-error"></span>
-                </div>
+                    <div class="col-md-6">
+                        <label asp-for="direccion" class="form-label">Dirección</label>
+                        <input asp-for="direccion" class="form-control" />
+                        <span asp-validation-for="direccion" class="text-danger"></span>
+                    </div>
 
-                <div style="margin-bottom:1rem;">
-                    <label asp-for="departamento"></label>
-                    <input asp-for="departamento" type="text" autocomplete="off" />
-                    <span asp-validation-for="departamento" class="field-error"></span>
-                </div>
+                    <div class="col-md-3">
+                        <label asp-for="altura" class="form-label">Altura</label>
+                        <input asp-for="altura" class="form-control" type="number" />
+                        <span asp-validation-for="altura" class="text-danger"></span>
+                    </div>
 
-                <div style="margin-bottom:1rem;">
-                    <label asp-for="telefono1"></label>
-                    <input asp-for="telefono1" type="number" autocomplete="off" />
-                    <span asp-validation-for="telefono1" class="field-error"></span>
-                </div>
+                    <div class="col-md-3">
+                        <label asp-for="departamento" class="form-label">Departamento</label>
+                        <input asp-for="departamento" class="form-control" />
+                        <span asp-validation-for="departamento" class="text-danger"></span>
+                    </div>
 
-                <div style="margin-bottom:1rem;">
-                    <label asp-for="telefono2"></label>
-                    <input asp-for="telefono2" type="number" autocomplete="off" />
-                    <span asp-validation-for="telefono2" class="field-error"></span>
-                </div>
+                    <div class="col-md-6">
+                        <label asp-for="telefono1" class="form-label">Teléfono 1</label>
+                        <input asp-for="telefono1" class="form-control" type="tel" />
+                        <span asp-validation-for="telefono1" class="text-danger"></span>
+                    </div>
 
-                <div style="margin-bottom:1rem;">
-                    <label asp-for="fechaAlta">Fecha de Alta</label>
-                    <input asp-for="fechaAlta" type="date" />
-                    <span asp-validation-for="fechaAlta" class="field-error"></span>
-                </div>
+                    <div class="col-md-6">
+                        <label asp-for="telefono2" class="form-label">Teléfono 2</label>
+                        <input asp-for="telefono2" class="form-control" type="tel" />
+                        <span asp-validation-for="telefono2" class="text-danger"></span>
+                    </div>
 
-                @{
-                    var estados = ViewBag.Estados as Dictionary<int, string> ?? new();
-                }
+                    <div class="col-md-6">
+                        <label asp-for="fechaAlta" class="form-label">Fecha de Alta</label>
+                        <input asp-for="fechaAlta" class="form-control" type="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                        <span asp-validation-for="fechaAlta" class="text-danger"></span>
+                    </div>
 
-                <div style="margin-bottom:1rem;">
-                    <label asp-for="id_estadoUsuario">Estado</label>
-                    <select asp-for="id_estadoUsuario" class="form-select" style="width:100%; padding:.6rem .8rem; border:1px solid #ddd; border-radius:.4rem; font-size:1rem;">
-                        <option value="">-- Seleccione un estado --</option>
-                        @foreach (var estado in estados)
-                        {
-                            <option value="@estado.Key">@estado.Value</option>
-                        }
-                        <option value="__nuevo__">➕ Agregar nuevo estado...</option>
-                    </select>
-                    <span asp-validation-for="id_estadoUsuario" class="field-error"></span>
-                </div>
-
-                <!-- Modal para crear estado -->
-                <div id="modal-estado" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); z-index:9999;">
-                    <div style="background:#fff; width:380px; max-width:90%; margin:10% auto; padding:2rem; border-radius:1rem; box-shadow:0 6px 12px rgba(0,0,0,0.25); text-align:center;">
-                        <h5 style="margin-bottom:1rem; color:#40ADB0;">Agregar nuevo estado</h5>
-
-                        <input id="nuevo-estado" type="text" placeholder="Ingrese descripción"
-                               style="width:100%; padding:.6rem; border:1px solid #ccc; border-radius:.4rem;" />
-                        <!-- 👇 este span mostrará el mensaje -->
-                        <span id="estado-error" style="display:none; color:#d9534f; font-size:.9rem; margin-top:.3rem; display:block;">
-                            El campo no puede estar vacío.
-                        </span>
-
-                        <div style="margin-top:1.2rem; display:flex; justify-content:center; gap:.5rem;">
-                            <button type="button" class="btn btn-primary" onclick="guardarNuevoEstado()">Guardar</button>
-                            <button type="button" class="btn btn-neutral" onclick="cerrarModalEstado()">Cancelar</button>
-                        </div>
+                    <div class="col-md-6">
+                        <label asp-for="id_estadoUsuario" class="form-label">Estado</label>
+                        <select asp-for="id_estadoUsuario" class="form-select" id="select-estado">
+                            <option value="">-- Seleccione un estado --</option>
+                            @foreach (var e in estados)
+                            {
+                                <option value="@e.Key">@e.Value</option>
+                            }
+                            <option value="__nuevo__">➕ Agregar nuevo estado...</option>
+                        </select>
+                        <span asp-validation-for="id_estadoUsuario" class="text-danger"></span>
                     </div>
                 </div>
-
-                <script>
-                    const selectEstado = document.querySelector('[name="id_estadoUsuario"]');
-
-                    // ⚡ esta es la ruta del método del Backoffice
-                    const urlAgregarEstado = '@Url.Action("AgregarEstado", "Usuario")';
-
-                    selectEstado.addEventListener('change', function () {
-                        if (this.value === '__nuevo__') {
-                            document.getElementById('modal-estado').style.display = 'block';
-                            this.value = ''; // limpia selección
-                        }
-                    });
-
-                    async function guardarNuevoEstado() {
-                        const descripcion = document.getElementById('nuevo-estado').value.trim();
-                        if (!descripcion) {
-                            alert('Ingrese una descripción válida.');
-                            return;
-                        }
-
-                        try {
-                            // 🔹 Llamamos al Backoffice, que reenvía a la API real
-                            const resp = await fetch(urlAgregarEstado, {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ descripcion })
-                            });
-
-                            if (!resp.ok) {
-                                const text = await resp.text();
-                                throw new Error(`Error ${resp.status}: ${text}`);
-                            }
-
-                            const data = await resp.json();
-
-                            // ✅ Agregar opción al combo y seleccionarla
-                            const option = new Option(data.descripcion, data.id);
-                            selectEstado.add(option);
-                            selectEstado.value = data.id;
-
-                            cerrarModalEstado();
-                        } catch (err) {
-                            console.error(err);
-                            alert('Error al guardar el estado: ' + err.message);
-                        }
-                    }
-
-                    function cerrarModalEstado() {
-                        document.getElementById('modal-estado').style.display = 'none';
-                        document.getElementById('nuevo-estado').value = '';
-                    }
-                </script>
-
             </form>
         </div>
     </div>
 </div>
 
-@section Scripts {
-    @{
-        <!-- Modal de Confirmación -->
-        <!-- Modal de Confirmación -->
-        <div id="modal-cancelar" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4); z-index:9999;">
-            <div style="
-                            background:#fff;
-                            width:380px;
-                            max-width:90%;
-                            margin:10% auto;
-                            padding:2rem 2rem 1.5rem;
-                            border-radius:1rem;
-                            box-shadow:0 6px 12px rgba(0,0,0,0.25);
-                            text-align:center;
-                            font-family:'Segoe UI', sans-serif;
-                            ">
-                <p style="font-size:1.2rem; color:#333; font-weight:600; margin-bottom:2rem;">
-                    ¿Realmente desea cancelar?
-                </p>
-                <div style="display:flex; justify-content:center; gap:1rem;">
-                    <a asp-action="Index" class="btn-modal">Sí</a>
-                    <button type="button" class="btn-modal" onclick="cerrarModalCancelar()">No</button>
-                </div>
-            </div>
+<!-- Modal para agregar nuevo estado -->
+<div id="modal-estado" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); z-index:9999;">
+    <div style="background:#fff; width:380px; margin:10% auto; padding:2rem; border-radius:1rem; text-align:center;">
+        <h5 style="margin-bottom:1rem; color:#40ADB0;">Agregar nuevo estado</h5>
+        <input id="nuevo-estado" type="text" placeholder="Ingrese descripción"
+               style="width:100%; padding:.6rem; border:1px solid #ccc; border-radius:.4rem;" />
+        <span id="estado-error" style="display:none; color:#A71A6C; font-size:.9rem; margin-top:.3rem;">Campo obligatorio</span>
+        <div style="margin-top:1.2rem; display:flex; justify-content:center; gap:.5rem;">
+            <button type="button" class="btn" style="background:#40ADB0;color:white;" onclick="guardarNuevoEstado()">Guardar</button>
+            <button type="button" class="btn" style="background:#ccc;color:black;" onclick="cerrarModalEstado()">Cancelar</button>
         </div>
+    </div>
+</div>
 
-        <style>
-            .btn-modal {
-                background-color: #40ADB0;
-                color: white;
-                border: none;
-                padding: 0.6rem 1.2rem;
-                font-size: 1rem;
-                border-radius: 0.6rem;
-                cursor: pointer;
-                transition: background-color 0.3s;
-                text-decoration: none;
-                font-weight: 500;
+@section Scripts {
+    <script>
+        <partial name="_ValidationScriptsPartial" />
+        const selectEstado = document.getElementById("select-estado");
+        const urlAgregarEstado = '@Url.Action("AgregarEstado", "Usuario")';
+
+        selectEstado.addEventListener("change", function () {
+            if (this.value === "__nuevo__") {
+                document.getElementById("modal-estado").style.display = "block";
+                this.value = "";
             }
+        });
 
-                .btn-modal:hover {
-                    background-color: #2e888b;
-                }
-        </style>
-
-        <script>
-            function mostrarModalCancelar() {
-                document.getElementById("modal-cancelar").style.display = "block";
+        async function guardarNuevoEstado() {
+            const descripcion = document.getElementById("nuevo-estado").value.trim();
+            const error = document.getElementById("estado-error");
+            if (!descripcion) {
+                error.style.display = "block";
+                return;
             }
-            function cerrarModalCancelar() {
-                document.getElementById("modal-cancelar").style.display = "none";
+            error.style.display = "none";
+
+            try {
+                const resp = await fetch(urlAgregarEstado, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ descripcion })
+                });
+                if (!resp.ok) throw new Error("Error al crear el estado");
+
+                const data = await resp.json();
+                const option = new Option(data.descripcion, data.id);
+                selectEstado.add(option);
+                selectEstado.value = data.id;
+
+                cerrarModalEstado();
+            } catch (err) {
+                alert("No se pudo guardar el estado: " + err.message);
             }
-        </script>
+        }
 
-        <script>
-            const selectEstado = document.getElementById("select-estado");
-            const urlAgregarEstado = '@Url.Action("AgregarEstado", "Usuario")';
-
-            // Abre el modal cuando elige "Agregar nuevo estado"
-            selectEstado.addEventListener("change", () => {
-                if (selectEstado.value === "__nuevo__") {
-                    document.getElementById("modal-estado").style.display = "block";
-                    document.getElementById("nuevo-estado").focus();
-                    selectEstado.value = ""; // limpia selección para evitar errores de validación
-                }
-            });
-
-                       async function guardarNuevoEstado() {
-                const input = document.getElementById("nuevo-estado");
-                const errorSpan = document.getElementById("estado-error");
-                const descripcion = input.value.trim();
-
-                // 🔹 Validación visual
-                if (!descripcion) {
-                    input.style.border = "2px solid #d9534f";
-                    errorSpan.style.display = "block";
-                    input.focus();
-                    return;
-                } else {
-                    input.style.border = "1px solid #ccc";
-                    errorSpan.style.display = "none";
-                }
-
-                try {
-                    const resp = await fetch('@Url.Action("AgregarEstado", "Usuario")', {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ descripcion })
-                    });
-
-                    if (!resp.ok) {
-                        const errText = await resp.text();
-                        throw new Error(`Error ${resp.status}: ${errText}`);
-                    }
-
-                    const data = await resp.json();
-
-                    const selectEstado = document.getElementById("select-estado");
-                    const option = new Option(data.descripcion, data.id);
-                    selectEstado.add(option);
-                    selectEstado.value = data.id;
-
-                    cerrarModalEstado();
-                } catch (err) {
-                    console.error(err);
-                    alert("Error al guardar el estado: " + err.message);
-                }
-            }
-            }
-
-            function cerrarModalEstado() {
-                document.getElementById("modal-estado").style.display = "none";
-                document.getElementById("nuevo-estado").value = "";
-            }
-        </script>
-        <script>
-            document.addEventListener('DOMContentLoaded', () => {
-              const fechaInput = document.querySelector('[name="fechaAlta"]');
-              if (fechaInput && !fechaInput.value)
-                fechaInput.valueAsDate = new Date();
-            });
-        </script>
-
-    }
+        function cerrarModalEstado() {
+            document.getElementById("modal-estado").style.display = "none";
+            document.getElementById("nuevo-estado").value = "";
+        }
+    </script>
 }
