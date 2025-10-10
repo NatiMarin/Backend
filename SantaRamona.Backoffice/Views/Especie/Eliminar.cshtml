@@ -84,11 +84,6 @@
                         ¿Realmente desea eliminar esta especie?
                     </div>
                     <div class="modal-footer" style="border-top:none;">
-                        <button type="button" class="btn" data-bs-dismiss="modal"
-                                style="background:#2FA8A2; color:#fff; border-radius:10px; padding:.4rem 1rem;">
-                            No
-                        </button>
-
                         <form asp-action="Eliminar" method="post" class="d-inline">
                             @Html.AntiForgeryToken()
                             <input type="hidden" name="id" value="@Model.id_especie" />
@@ -97,6 +92,11 @@
                                 Sí, eliminar
                             </button>
                         </form>
+
+                        <button type="button" class="btn" data-bs-dismiss="modal"
+                                style="background:#2FA8A2; color:#fff; border-radius:10px; padding:.4rem 1rem;">
+                            No
+                        </button>
                     </div>
                 </div>
             </div>

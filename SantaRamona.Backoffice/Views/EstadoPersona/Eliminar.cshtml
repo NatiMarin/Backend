@@ -1,12 +1,12 @@
-﻿@model SantaRamona.Backoffice.Models.Estado_Animal
+﻿@model SantaRamona.Backoffice.Models.Estado_Persona
 @{
-    ViewData["Title"] = "Eliminar estado";
-    bool enUso = ViewBag.EnUso is bool b && b;
+    ViewData["Title"] = "Eliminar estado de persona";
+    bool enUso = ViewBag.EnUso is bool b && b; // opcional: si tu controller marca cuando está en uso
 }
 
 <div class="container mt-4">
     <h1 class="text-center fw-bold" style="color:#2FA8A2; letter-spacing:.5px;">
-        ELIMINAR ESTADO
+        ELIMINAR ESTADO DE PERSONA
     </h1>
 
     @if (TempData["Error"] is string err)
@@ -14,6 +14,10 @@
         <div class="alert mt-3" role="alert"
              style="background:#fff3f3; border:1px solid #d9534f; color:#a94442; border-radius:10px;">
             @err
+            @if (TempData["ApiDetail"] is string det && !string.IsNullOrWhiteSpace(det))
+            {
+                <div class="small mt-1 text-muted">@det</div>
+            }
         </div>
     }
     @if (TempData["Ok"] is string ok)
@@ -28,7 +32,7 @@
     {
         <div class="alert mt-3" role="alert"
              style="background:#fff8e6; border:1px solid #f0ad4e; color:#8a6d3b; border-radius:10px;">
-            No se puede eliminar el estado porque está en uso por uno o más animales.
+            No se puede eliminar el estado porque está en uso por una o más personas.
         </div>
     }
 
@@ -50,7 +54,6 @@
                             Eliminar
                         </button>
                     }
-                    @* Cancelar SIEMPRE visible *@
                     <a asp-action="Index" class="btn"
                        style="background:#2FA8A2; color:#fff; border-radius:10px; padding:.5rem 1.25rem;">
                         Cancelar
@@ -60,11 +63,11 @@
 
             <div class="mb-3">
                 <label class="form-label">Identificación</label>
-                <input class="form-control" value="@Model.id_estadoAnimal" disabled />
+                <input class="form-control" value="@Model.id_estadoPersona" disabled />
             </div>
             <div class="mb-3">
                 <label class="form-label">Descripción</label>
-                <input class="form-control" value="@Model.estado" disabled />
+                <input class="form-control" value="@Model.descripcion" disabled />
             </div>
         </div>
     </div>
@@ -81,12 +84,12 @@
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                     </div>
                     <div class="modal-body" style="color:#000;">
-                        ¿Realmente desea eliminar este estado?
+                        ¿Realmente desea eliminar este estado de persona?
                     </div>
                     <div class="modal-footer" style="border-top:none;">
                         <form asp-action="Eliminar" method="post" class="d-inline">
                             @Html.AntiForgeryToken()
-                            <input type="hidden" name="id" value="@Model.id_estadoAnimal" />
+                            <input type="hidden" name="id" value="@Model.id_estadoPersona" />
                             <button type="submit" class="btn"
                                     style="background:#2FA8A2; color:#fff; border-radius:10px; padding:.4rem 1rem;">
                                 Sí, eliminar
@@ -98,8 +101,10 @@
                             No
                         </button>
                     </div>
+
                 </div>
             </div>
         </div>
     }
 </div>
+
