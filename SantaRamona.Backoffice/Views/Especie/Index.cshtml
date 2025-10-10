@@ -147,10 +147,9 @@
                                 </a>
 
                                 @* Ir a la vista de confirmación GET /Especie/Eliminar/{id} *@
-                                <a asp-controller="Especie"
-                                   asp-action="Eliminar"
-                                   asp-route-id="@item.id_especie"
-                                   class="btn-danger">
+                                <a asp-action="Eliminar" asp-route-id="@item.id_especie"
+                                   class="btn btn-sm"
+                                   style="background:#A71A6C; color:#fff; border-radius:10px; padding:.35rem .8rem;">
                                     Eliminar
                                 </a>
 

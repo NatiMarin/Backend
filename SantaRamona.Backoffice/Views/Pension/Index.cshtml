@@ -1,26 +1,32 @@
-﻿@model IEnumerable<SantaRamona.Backoffice.Models.Persona>
-@using System
-
+﻿@model IEnumerable<SantaRamona.Backoffice.Models.Pension>
 @{
-    // Barra superior específica de Personas
-    await Html.RenderPartialAsync("_PersonaTopNav");
-}
+    // Si tenés un top nav específico, descomentá:
+    // await Html.RenderPartialAsync("_PensionTopNav");
 
-@{
-    ViewData["Title"] = "Lista de Personas";
+    ViewData["Title"] = "Lista de Pensiones";
 
-    // Diccionario de estados: id -> descripción (lo llena el controller)
-    var estados = ViewBag.Estados as Dictionary<int, string> ?? new();
-
-    string EstadoTxt(int id) => estados.TryGetValue(id, out var v) ? v : $"#{id}";
+    string Str(string? s) => string.IsNullOrWhiteSpace(s) ? "—" : s!;
+    string Tel(object? t) => (t == null) ? "—" : t.ToString();
+    string Money(decimal m) => m.ToString("C"); // usa cultura del servidor
+    string Fecha(DateTime? d) => (d == null || d == default) ? "—" : d.Value.ToString("dd/MM/yyyy");
+    string Dir(SantaRamona.Backoffice.Models.Pension p)
+    {
+        var partes = new[]{
+            p.calle,
+            p.altura,
+            p.pisoCasa,
+            p.departamento,
+            p.barrio
+        }.Where(x => !string.IsNullOrWhiteSpace(x));
+        return partes.Any() ? string.Join(" ", partes!) : "—";
+    }
 }
 
 <div class="container mt-4">
     <h1 class="text-center fw-bold" style="color:#2FA8A2; letter-spacing:.5px;">
-        LISTA DE PERSONAS
+        LISTA DE PENSIONES
     </h1>
 
-    @* Avisos *@
     @if (ViewBag.Ok != null)
     {
         <div class="alert mt-3" role="alert"
@@ -40,7 +46,7 @@
     <div class="d-flex justify-content-end mt-3">
         <a asp-action="Crear" class="btn"
            style="background:#2FA8A2; color:#fff; border-radius:10px; padding:.5rem 1.25rem;">
-            Agregar Nueva Persona
+            Agregar Nueva Pensión
         </a>
     </div>
 
@@ -48,45 +54,44 @@
         <div class="card-body p-0">
             <table class="table mb-0">
                 <thead>
-                    <!-- Encabezado turquesa con letras blancas -->
                     <tr style="background:#2FA8A2; color:#fff;">
                         <th style="border-top-left-radius:10px;">Código</th>
                         <th>Nombre</th>
-                        <th>Apellido</th>
-                        <th>DNI</th>
+                        <th>Teléfono</th>
                         <th>Email</th>
-                        <th>Provincia</th>
-                        <th>Estado</th>
+                        <th>Dirección</th>
+                        <th>Monto/día</th>
+                        <th>Ingreso</th>
                         <th class="text-end" style="border-top-right-radius:10px;">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
                     @if (Model != null && Model.Any())
                     {
-                        foreach (var p in Model)
+                        foreach (var item in Model)
                         {
                             <tr>
-                                <td>@p.id_persona</td>
-                                <td>@p.nombre</td>
-                                <td>@p.apellido</td>
-                                <td>@(p.dni?.ToString() ?? "—")</td>
-                                <td>@(string.IsNullOrWhiteSpace(p.email) ? "—" : p.email)</td>
-                                <td>@(string.IsNullOrWhiteSpace(p.provincia) ? "—" : p.provincia)</td>
-                                <td>@EstadoTxt(p.id_estadoPersona)</td>
+                                <td>@item.id_pension</td>
+                                <td>@Str(item.nombre)</td>
+                                <td>@Tel(item.telefono)</td>
+                                <td>@Str(item.email)</td>
+                                <td>@Dir(item)</td>
+                                <td>@Money(item.montoDia)</td>
+                                <td>@Fecha(item.fechaIngreso)</td>
                                 <td class="text-end">
-                                    <a href="javascript:void(0)" data-ver-persona="@p.id_persona"
+                                    <a href="javascript:void(0)" data-ver-pension="@item.id_pension"
                                        class="btn btn-sm"
                                        style="background:#2FA8A2; color:#fff; border-radius:10px; padding:.35rem .8rem; margin-right:.25rem;">
                                         Ver
                                     </a>
 
-                                    <a asp-action="Modificar" asp-route-id="@p.id_persona"
+                                    <a asp-action="Modificar" asp-route-id="@item.id_pension"
                                        class="btn btn-sm"
                                        style="background:#2FA8A2; color:#fff; border-radius:10px; padding:.35rem .8rem; margin-right:.25rem;">
                                         Modificar
                                     </a>
 
-                                    <a asp-action="Eliminar" asp-route-id="@p.id_persona"
+                                    <a asp-action="Eliminar" asp-route-id="@item.id_pension"
                                        class="btn btn-sm"
                                        style="background:#A71A6C; color:#fff; border-radius:10px; padding:.35rem .8rem;">
                                         Eliminar
@@ -98,7 +103,7 @@
                     else
                     {
                         <tr>
-                            <td colspan="8" class="text-center text-muted p-4">No hay personas cargadas.</td>
+                            <td colspan="8" class="text-center text-muted p-4">No hay pensiones cargadas.</td>
                         </tr>
                     }
                 </tbody>
@@ -106,16 +111,16 @@
         </div>
     </div>
 
-    <!-- Modal Detalle (mismo patrón que Animal) -->
-    <div class="modal fade" id="modalDetallePersona" tabindex="-1" aria-hidden="true">
+    <!-- Modal Detalle -->
+    <div class="modal fade" id="modalDetallePension" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content" style="border-radius:14px;">
                 <div class="modal-header" style="background:#2FA8A2; color:#fff; border-top-left-radius:14px; border-top-right-radius:14px;">
-                    <h5 class="modal-title">Detalle de la persona</h5>
+                    <h5 class="modal-title">Detalle de la pensión</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
-                <div class="modal-body" id="modalDetallePersonaBody">
-                    <!-- El partial _DetallePersona se carga acá -->
+                <div class="modal-body" id="modalDetallePensionBody">
+                    <!-- El partial _DetallePension se carga acá -->
                 </div>
             </div>
         </div>
@@ -124,14 +129,14 @@
     @section Scripts {
         <script>
             (() => {
-              // Url base generada por MVC (ej: /Persona/Detalle)
-              const baseUrl = '@Url.Action("Detalle", "Persona")';
+              // Url base generada por MVC (ej: /Pension/Detalle)
+              const baseUrl = '@Url.Action("Detalle", "Pension")';
 
               document.addEventListener('click', async (ev) => {
-                const btn = ev.target.closest('[data-ver-persona]');
+                const btn = ev.target.closest('[data-ver-pension]');
                 if (!btn) return;
 
-                const id = btn.getAttribute('data-ver-persona');
+                const id = btn.getAttribute('data-ver-pension');
 
                 try {
                   const resp = await fetch(`${baseUrl}/${id}`, {
@@ -141,14 +146,13 @@
                   const html = await resp.text();
                   if (!resp.ok) throw new Error(html || `HTTP ${resp.status}`);
 
-                  document.getElementById('modalDetallePersonaBody').innerHTML = html;
+                  document.getElementById('modalDetallePensionBody').innerHTML = html;
 
-                  // Abrir modal (Bootstrap 5)
-                  const modal = new bootstrap.Modal(document.getElementById('modalDetallePersona'));
+                  const modal = new bootstrap.Modal(document.getElementById('modalDetallePension'));
                   modal.show();
                 } catch (err) {
                   console.error(err);
-                  alert('No se pudo cargar el detalle de la persona.');
+                  alert('No se pudo cargar el detalle de la pensión.');
                 }
               });
             })();
