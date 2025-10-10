@@ -6,6 +6,7 @@
     string Txt(Dictionary<int, string> d, int id) => d.TryGetValue(id, out var v) ? v : $"#{id}";
     Layout = null; // ✅ Desactiva el layout para uso dentro de modal
 }
+@await Html.PartialAsync("_UsuarioTopNav")
 
 <div class="container-fluid" style="font-family: Helvetica, Arial, sans-serif;">
     <div class="row g-3">

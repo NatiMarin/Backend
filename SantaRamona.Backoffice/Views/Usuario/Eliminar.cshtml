@@ -5,6 +5,7 @@
     string motivo = ViewBag.Motivo as string ?? string.Empty;
     var estados = ViewBag.Estados as Dictionary<int, string> ?? new();
 }
+@await Html.PartialAsync("_UsuarioTopNav")
 
 <div class="container mt-4" style="font-family: Helvetica, Arial, sans-serif;">
     <h1 class="text-center fw-bold" style="color:#40ADB0; letter-spacing:.5px;">

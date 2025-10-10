@@ -3,6 +3,7 @@
     ViewData["Title"] = "Agregar Nuevo Usuario";
     var estados = ViewBag.Estados as Dictionary<int, string> ?? new();
 }
+@await Html.PartialAsync("_UsuarioTopNav")
 
 <div class="container mt-4">
     <h1 class="text-center fw-bold" style="color:#40ADB0; letter-spacing:.5px;">
@@ -112,7 +113,7 @@
                             {
                                 <option value="@e.Key">@e.Value</option>
                             }
-                            <option value="__nuevo__">➕ Agregar nuevo estado...</option>
+                            <!-- <option value="__nuevo__">➕ Agregar nuevo estado...</option> -->
                         </select>
                         <span asp-validation-for="id_estadoUsuario" class="text-danger"></span>
                     </div>
@@ -136,7 +137,7 @@
     </div>
 </div>
 
-@section Scripts {
+Scripts {
     <script>
         <partial name="_ValidationScriptsPartial" />
         const selectEstado = document.getElementById("select-estado");

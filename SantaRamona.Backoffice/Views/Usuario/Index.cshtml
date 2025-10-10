@@ -4,6 +4,7 @@
     var estados = ViewBag.Estados as Dictionary<int, string> ?? new();
     string Txt(Dictionary<int, string> d, int id) => d.TryGetValue(id, out var v) ? v : $"#{id}";
 }
+@await Html.PartialAsync("_UsuarioTopNav")
 
 <link rel="stylesheet" href="~/css/estilos-backoffice.css" />
 

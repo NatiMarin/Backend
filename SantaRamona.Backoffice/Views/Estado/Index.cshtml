@@ -5,6 +5,7 @@
 
 @{
     ViewData["Title"] = "Estados";
+    Layout = "~/Views/Shared/_LayoutBackoffice.cshtml";
 }
 
 <div class="container mt-4">
@@ -12,7 +13,6 @@
         LISTADO DE ESTADOS
     </h1>
 
-    @* Avisos arriba (idéntico a los otros módulos) *@
     @if (ViewBag.Ok != null)
     {
         <div class="alert mt-3" role="alert"

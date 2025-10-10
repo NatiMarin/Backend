@@ -1,47 +1,61 @@
 ﻿@model SantaRamona.Backoffice.Models.Estado_Usuario
 @{
     ViewData["Title"] = "Eliminar Estado Usuario";
+    bool enUso = ViewBag.EnUso is bool b && b;
 }
+@await Html.PartialAsync("_UsuarioTopNav")
 
+<link rel="stylesheet" href="~/css/estilos-backoffice.css" />
 <div class="container mt-4">
-    <h1 class="text-center fw-bold" style="color:#2FA8A2; letter-spacing:.5px;">
-        ELIMINAR ESTADO USUARIO
+    <h1 class="text-center fw-bold" style="color:#40ADB0; letter-spacing:.5px;">
+        ELIMINAR ESTADO DE USUARIO
     </h1>
 
     @if (TempData["Error"] is string err)
     {
         <div class="alert mt-3" role="alert"
-             style="background:#fff3f3; border:1px solid #d9534f; color:#a94442; border-radius:10px;">
+             style="background:#FFE3E3; border:1px solid #A71A6C; color:#A71A6C; border-radius:10px;">
             @err
-            @if (TempData["ApiDetail"] is string apiDet && !string.IsNullOrWhiteSpace(apiDet))
-            {
-                <div class="mt-1" style="font-size:.9rem; opacity:.9">@apiDet</div>
-            }
         </div>
     }
+
     @if (TempData["Ok"] is string ok)
     {
         <div class="alert mt-3" role="alert"
-             style="background:#E6F6F5; border:1px solid #2FA8A2; color:#155e59; border-radius:10px;">
+             style="background:#E6F6F5; border:1px solid #40ADB0; color:#155e59; border-radius:10px;">
             @ok
         </div>
     }
 
-    <div class="card shadow-sm mt-3" style="border:1px solid #2FA8A2; border-radius:14px;">
-        <div class="card-header" style="background:#2FA8A2; color:#fff; border-top-left-radius:14px; border-top-right-radius:14px;">
-            <strong>Datos de la Especie</strong>
+    @if (enUso)
+    {
+        <div class="alert mt-3" role="alert"
+             style="background:#FFF9E6; border:1px solid #F0AD4E; color:#8A6D3B; border-radius:10px;">
+            No se puede eliminar este estado porque está en uso por uno o más usuarios.
         </div>
+    }
+
+    <div class="card shadow-sm mt-3" style="border:1px solid #40ADB0; border-radius:14px;">
+        <div class="card-header" style="background:#40ADB0; color:#fff; border-top-left-radius:14px; border-top-right-radius:14px;">
+            <strong>Datos del Estado</strong>
+        </div>
+
         <div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <a asp-action="Index" class="btn" style="border:1px solid #2FA8A2; color:#2FA8A2; border-radius:10px;">← Volver al listado</a>
+                <a asp-action="Index" class="btn"
+                   style="border:1px solid #40ADB0; color:#40ADB0; border-radius:10px;">← Volver al listado</a>
+
                 <div class="d-flex gap-2">
-                    <button type="button" class="btn"
-                            data-bs-toggle="modal" data-bs-target="#confirmarEliminar"
-                            style="background:#2FA8A2; color:#fff; border-radius:10px; padding:.5rem 1.25rem;">
-                        Eliminar
-                    </button>
+                    @if (!enUso)
+                    {
+                        <button type="button" class="btn"
+                                data-bs-toggle="modal" data-bs-target="#confirmarEliminar"
+                                style="background:#40ADB0; color:#fff; border-radius:10px; padding:.5rem 1.25rem;">
+                            Eliminar
+                        </button>
+                    }
                     <a asp-action="Index" class="btn"
-                       style="background:#2FA8A2; color:#fff; border-radius:10px; padding:.5rem 1.25rem;">
+                       style="background:#40ADB0; color:#fff; border-radius:10px; padding:.5rem 1.25rem;">
                         Cancelar
                     </a>
                 </div>
@@ -51,6 +65,7 @@
                 <label class="form-label">Identificación</label>
                 <input class="form-control" value="@Model.id_estadoUsuario" disabled />
             </div>
+
             <div class="mb-3">
                 <label class="form-label">Descripción</label>
                 <input class="form-control" value="@Model.descripcion" disabled />
@@ -58,34 +73,36 @@
         </div>
     </div>
 
-    <!-- Modal de confirmación (mismo look que Estado/Raza) -->
-    <div class="modal fade" id="confirmarEliminar" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content" style="border-radius:14px;">
-                <div class="modal-header"
-                     style="background:#2FA8A2; color:#fff; border-top-left-radius:14px; border-top-right-radius:14px;">
-                    <h5 class="modal-title">Confirmar eliminación</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                </div>
-                <div class="modal-body" style="color:#000;">
-                    ¿Realmente desea eliminar este estado?
-                </div>
-                <div class="modal-footer" style="border-top:none;">
-                    <button type="button" class="btn" data-bs-dismiss="modal"
-                            style="background:#2FA8A2; color:#fff; border-radius:10px; padding:.4rem 1rem;">
-                        No
-                    </button>
-
-                    <form asp-action="Eliminar" method="post" class="d-inline">
-                        @Html.AntiForgeryToken()
-                        <input type="hidden" name="id" value="@Model.id_estadoUsuario" />
-                        <button type="submit" class="btn"
-                                style="background:#2FA8A2; color:#fff; border-radius:10px; padding:.4rem 1rem;">
-                            Sí, eliminar
+    @if (!enUso)
+    {
+        <div class="modal fade" id="confirmarEliminar" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content" style="border-radius:14px;">
+                    <div class="modal-header"
+                         style="background:#40ADB0; color:#fff; border-top-left-radius:14px; border-top-right-radius:14px;">
+                        <h5 class="modal-title">Confirmar eliminación</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body" style="color:#000;">
+                        ¿Realmente desea eliminar este estado?
+                    </div>
+                    <div class="modal-footer" style="border-top:none;">
+                        <button type="button" class="btn" data-bs-dismiss="modal"
+                                style="background:#40ADB0; color:#fff; border-radius:10px; padding:.4rem 1rem;">
+                            No
                         </button>
-                    </form>
+
+                        <form asp-action="Eliminar" method="post" class="d-inline">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@Model.id_estadoUsuario" />
+                            <button type="submit" class="btn"
+                                    style="background:#40ADB0; color:#fff; border-radius:10px; padding:.4rem 1rem;">
+                                Sí, eliminar
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    }
 </div>

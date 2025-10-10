@@ -1,161 +1,56 @@
 ﻿@model IEnumerable<SantaRamona.Backoffice.Models.Estado_Usuario>
 
 @{
+
     ViewData["Title"] = "Estados de Usuario";
 }
+@await Html.PartialAsync("_UsuarioTopNav")
 
-<style>
-    .container {
-        max-width: 1000px;
-        margin: 2rem auto;
-        padding: 0 1rem;
-        font-family: 'Segoe UI', sans-serif;
-    }
+<link rel="stylesheet" href="~/css/estilos-backoffice.css" />
+<div class="container mt-4">
+    <h1 class="text-center fw-bold" style="color:#40ADB0; letter-spacing:.5px;">
+        LISTA DE ESTADOS DE USUARIO
+    </h1>
 
-    h1 {
-        text-align: center;
-        color: #2FA8A2;
-        font-weight: bold;
-        text-transform: uppercase;
-        letter-spacing: .5px;
-        margin-bottom: 1.5rem;
-    }
-
-    .alert {
-        border-radius: 10px;
-        padding: 0.9rem 1.2rem;
-        margin-bottom: 1rem;
-        font-weight: 500;
-    }
-
-    .alert-success {
-        background: #E6F6F5;
-        border: 1px solid #2FA8A2;
-        color: #155e59;
-    }
-
-    .alert-error {
-        background: #fff3f3;
-        border: 1px solid #d9534f;
-        color: #a94442;
-    }
-
-    .alert-warning {
-        background: #fff9e6;
-        border: 1px solid #f0ad4e;
-        color: #8a6d3b;
-    }
-
-    .btn {
-        padding: 0.45rem 1rem;
-        border-radius: 10px;
-        font-size: 0.95rem;
-        text-decoration: none;
-        cursor: pointer;
-        transition: background 0.2s;
-        display: inline-block;
-    }
-
-    .btn-primary {
-        background: #2FA8A2;
-        color: #fff;
-        border: none;
-    }
-
-        .btn-primary:hover {
-            background: #278f8a;
-        }
-
-    .btn-danger {
-        background: #d9534f;
-        color: #fff;
-        border: none;
-    }
-
-        .btn-danger:hover {
-            background: #b52d2a;
-        }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 1rem;
-        border: 1px solid #2FA8A2;
-        border-radius: 14px;
-        overflow: hidden;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-
-    thead {
-        background: #2FA8A2;
-        color: #fff;
-    }
-
-    th, td {
-        padding: 0.9rem;
-        text-align: left;
-        border-top: 1px solid #eaeaea;
-    }
-
-    tbody tr:nth-child(even) {
-        background: #f9f9f9;
-    }
-
-    .text-end {
-        text-align: right;
-    }
-
-    .badge {
-        display: inline-block;
-        padding: 0.35rem 0.6rem;
-        border-radius: 8px;
-        font-size: 0.85rem;
-        font-weight: 500;
-        border: 1px solid #2FA8A2;
-        background: #E6F6F5;
-        color: #155e59;
-    }
-</style>
-
-<div class="container">
-    <h1>Lista de Estados de Usuario</h1>
-
-    <!-- Mensajes -->
+    <!-- ✅ Mensajes de confirmación o error -->
     @if (TempData["Ok"] != null)
     {
-        <div class="alert alert-success">@TempData["Ok"]</div>
+        <div class="alert mt-3" style="background:#E6F6F5; border:1px solid #40ADB0; color:#155e59; border-radius:10px;">
+            @TempData["Ok"]
+        </div>
     }
     @if (TempData["Error"] != null)
     {
-        <div class="alert alert-error">@TempData["Error"]</div>
+        <div class="alert mt-3" style="background:#FFE3E3; border:1px solid #A71A6C; color:#A71A6C; border-radius:10px;">
+            @TempData["Error"]
+        </div>
     }
     @if (ViewBag.ApiError != null)
     {
-        <div class="alert alert-error">@ViewBag.ApiError</div>
-    }
-
-    @* Aviso general si hay estados en uso *@
-    @if (Model.Any(e => e.enUso))
-    {
-        <div class="alert alert-warning">
-            Algunos estados no pueden eliminarse porque están siendo usados por usuarios.
+        <div class="alert mt-3" style="background:#FFE3E3; border:1px solid #A71A6C; color:#A71A6C; border-radius:10px;">
+            @ViewBag.ApiError
         </div>
     }
 
+    <!-- Botón agregar -->
     <div class="d-flex justify-content-end mb-3">
-        <a asp-action="Crear" class="btn btn-primary">Agregar Nuevo Estado</a>
+        <a asp-action="Crear" class="btn"
+           style="background:#40ADB0; color:#fff; border-radius:10px; padding:.45rem 1rem;">
+            + Agregar nuevo estado
+        </a>
     </div>
 
+    <!-- Tabla -->
     @if (Model?.Any() == true)
     {
-        <div class="card shadow-sm" style="border:1px solid #2FA8A2; border-radius:14px;">
+        <div class="card shadow-sm" style="border:1px solid #40ADB0; border-radius:14px;">
             <div class="card-body p-0">
-                <table>
-                    <thead>
+                <table class="table align-middle mb-0">
+                    <thead style="background:#40ADB0; color:#fff;">
                         <tr>
-                            <th>Código</th>
+                            <th style="width:120px;">Código</th>
                             <th>Descripción</th>
-                            <th class="text-end">Acciones</th>
+                            <th class="text-end" style="width:240px;">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -166,23 +61,16 @@
                                 <td>@item.descripcion</td>
                                 <td class="text-end">
                                     <a asp-action="Modificar" asp-route-id="@item.id_estadoUsuario"
-                                       class="btn btn-primary me-1">
+                                       class="btn btn-sm"
+                                       style="background:#40ADB0; color:#fff; border-radius:10px; padding:.35rem .9rem;">
                                         Modificar
                                     </a>
 
-                                    @if (!item.enUso)
-                                    {
-                                        <a asp-action="Eliminar" asp-route-id="@item.id_estadoUsuario"
-                                           class="btn btn-danger">
-                                            Eliminar
-                                        </a>
-                                    }
-                                    else
-                                    {
-                                        <span class="badge" title="No puedes eliminar este estado porque está asignado a un usuario. Podés corregirlo desde 'Modificar'.">
-                                            En uso
-                                        </span>
-                                    }
+                                    <a asp-action="Eliminar" asp-route-id="@item.id_estadoUsuario"
+                                       class="btn btn-sm"
+                                       style="background:#A71A6C; color:#fff; border-radius:10px; padding:.35rem .9rem; margin-left:.25rem;">
+                                        Eliminar
+                                    </a>
                                 </td>
                             </tr>
                         }
@@ -193,6 +81,6 @@
     }
     else
     {
-        <p class="text-muted text-center mt-3">No hay estados cargados.</p>
+        <p class="text-center text-muted mt-3">No hay estados cargados.</p>
     }
 </div>
