@@ -1,0 +1,104 @@
+﻿@model SantaRamona.Backoffice.Models.Tipo_Formulario
+@{
+    ViewData["Title"] = "Modificar Tipo de Formulario";
+}
+
+<div class="container mt-4">
+    <h1 class="text-center fw-bold" style="color:#2FA8A2; letter-spacing:.5px;">
+        MODIFICAR TIPO DE FORMULARIO
+    </h1>
+
+    @* Mensajes (mismo estilo que Animal) *@
+    @if (ViewBag.Ok != null)
+    {
+        <div class="alert mt-3" role="alert"
+             style="background:#E6F6F5; border:1px solid #2FA8A2; color:#155e59; border-radius:10px;">
+            @ViewBag.Ok
+        </div>
+    }
+    @if (ViewBag.ApiError != null)
+    {
+        <div class="alert mt-3" role="alert"
+             style="background:#fff3f3; border:1px solid #d9534f; color:#a94442; border-radius:10px; white-space:pre-wrap;">
+            @ViewBag.ApiError
+        </div>
+    }
+
+    <div class="card shadow-sm mt-3" style="border:1px solid #2FA8A2; border-radius:14px;">
+        <div class="card-header d-flex justify-content-between align-items-center"
+             style="background:#2FA8A2; color:#fff; border-top-left-radius:14px; border-top-right-radius:14px;">
+            <a asp-action="Index" class="btn"
+               style="border:1px solid #fff; color:#fff; border-radius:10px;">← Volver al listado</a>
+
+            <div class="d-flex gap-2">
+                <button type="submit" form="frm-modificar" class="btn"
+                        style="background:#fff; color:#2FA8A2; border:1px solid #fff; border-radius:10px; padding:.5rem 1.25rem;">
+                    Guardar
+                </button>
+
+                @* Mantengo tu lógica de modal para Cancelar, solo cambio el estilo *@
+                <button type="button" class="btn"
+                        style="background:#fff; color:#2FA8A2; border:1px solid #fff; border-radius:10px; padding:.5rem 1.25rem;"
+                        onclick="mostrarModalCancelar()">
+                    Cancelar
+                </button>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <form id="frm-modificar" asp-action="Modificar" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="id_tipoFormulario" />
+
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label asp-for="descripcion" class="form-label">Descripción</label>
+                        <input asp-for="descripcion" type="text" autocomplete="off" class="form-control" />
+                        <span asp-validation-for="descripcion" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div asp-validation-summary="ModelOnly" class="text-danger mt-2"></div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+@* Modal de confirmación (misma paleta y tipografía, lógica intacta) *@
+    <div id="modal-cancelar" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:9999;">
+        <div style="
+                background:#fff;
+                width:380px; max-width:90%;
+                margin:10% auto;
+                padding:2rem 2rem 1.5rem;
+                border-radius:14px;
+                box-shadow:0 6px 12px rgba(0,0,0,.25);
+                text-align:center;
+                font-family:'Segoe UI', sans-serif;">
+            <p style="font-size:1.2rem; color:#000; font-weight:700; margin-bottom:2rem;">
+                ¿Realmente desea cancelar?
+            </p>
+            <div style="display:flex; justify-content:center; gap:0.75rem;">
+                <a asp-action="Index"
+                   style="background:#2FA8A2; color:#fff; border:1px solid #2FA8A2; border-radius:10px; padding:.55rem 1.2rem; text-decoration:none;">
+                    Sí
+                </a>
+                <button type="button"
+                        style="background:#2FA8A2; color:#fff; border:1px solid #2FA8A2; border-radius:10px; padding:.55rem 1.2rem;"
+                        onclick="cerrarModalCancelar()">
+                    No
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function mostrarModalCancelar() {
+            document.getElementById("modal-cancelar").style.display = "block";
+        }
+        function cerrarModalCancelar() {
+            document.getElementById("modal-cancelar").style.display = "none";
+        }
+    </script>
+}

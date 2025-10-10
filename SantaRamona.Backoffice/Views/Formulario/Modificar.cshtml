@@ -1,0 +1,291 @@
+﻿@model SantaRamona.Backoffice.Models.Formulario
+
+@{
+    ViewData["Title"] = "Modificar Formulario";
+
+    // Mapas id -> texto que manda el controller
+    var personas = (IDictionary<int, string>)(ViewBag.PersonasMap ?? new Dictionary<int, string>());
+    var tipos = (IDictionary<int, string>)(ViewBag.TiposMap ?? new Dictionary<int, string>());
+    var estados = (IDictionary<int, string>)(ViewBag.EstadosMap ?? new Dictionary<int, string>());
+    var usuarios = (IDictionary<int, string>)(ViewBag.UsuariosMap ?? new Dictionary<int, string>());
+
+    // Selecciones actuales
+    int selPersona = Model?.id_persona ?? 0;
+    int selTipo = Model?.id_tipoFormulario ?? 0;
+    int selEstado = Model?.id_estadoFormulario ?? 0;
+    int? selUsuario = Model?.id_usuario;
+
+    // Valor para datetime-local
+    var dt = (Model?.fechaAltaFormulario == default(DateTime) ? DateTime.Now : Model!.fechaAltaFormulario);
+    string fechaStr = dt.ToString("yyyy-MM-ddTHH:mm");
+}
+
+<style>
+    .main-container {
+        max-width: 900px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .form-title {
+        text-align: center;
+        color: #40ADB0;
+        font-size: 2.2rem;
+        margin-bottom: 1.2rem;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+    }
+
+    .card {
+        background: #fff;
+        border: 2px solid #40ADB0;
+        border-radius: 0.6rem;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        overflow: hidden;
+    }
+
+    .card-header {
+        background: #40ADB0;
+        color: #fff;
+        padding: 1rem 1.2rem;
+        font-weight: 700;
+        border-bottom: 1px solid rgba(0,0,0,.05);
+    }
+
+    .card-body {
+        padding: 1.2rem;
+    }
+
+    .toolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .btn {
+        padding: 0.55rem 1.0rem;
+        font-size: 1rem;
+        border-radius: 0.6rem;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        transition: background-color .25s, color .25s, border-color .25s;
+        display: inline-flex;
+        align-items: center;
+        gap: .4rem;
+    }
+
+    .btn-outline {
+        background: #fff;
+        color: #40ADB0;
+        border: 2px solid #40ADB0;
+    }
+
+        .btn-outline:hover {
+            background: #EAF6F6;
+        }
+
+    .btn-primary {
+        background: #40ADB0;
+        color: #fff;
+        border: 2px solid #40ADB0;
+    }
+
+        .btn-primary:hover {
+            background: #2e888b;
+            border-color: #2e888b;
+        }
+
+    label {
+        display: block;
+        font-weight: 700;
+        margin-bottom: .4rem;
+        color: #333;
+    }
+
+    input[type="text"], input[type="datetime-local"], select {
+        width: 100%;
+        padding: .6rem .8rem;
+        border: 1px solid #ddd;
+        border-radius: .4rem;
+        font-size: 1rem;
+        outline: none;
+    }
+
+        input[type="text"]:focus, input[type="datetime-local"]:focus, select:focus {
+            border-color: #40ADB0;
+            box-shadow: 0 0 0 4px rgba(64,173,176,0.15);
+        }
+
+    .alert-ok {
+        margin: .8rem 0;
+        padding: .7rem 1rem;
+        border: 2px solid #40ADB0;
+        background: #EAF6F6;
+        border-radius: .6rem;
+        color: #155e63;
+        font-weight: 600;
+    }
+
+    .alert-error {
+        margin: .8rem 0;
+        padding: .7rem 1rem;
+        border: 2px solid #ff6b6b;
+        background: #ffecec;
+        border-radius: .6rem;
+        color: #a33;
+        font-weight: 600;
+        white-space: pre-wrap;
+    }
+
+    .field-error {
+        color: #d9534f;
+        font-weight: 600;
+        margin-top: .25rem;
+        display: block;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: .6rem;
+    }
+</style>
+
+<div class="main-container">
+    <h2 class="form-title">Modificar Formulario</h2>
+
+    @* Mensajes en la misma vista *@
+    @if (ViewBag.Ok != null)
+    {
+        <div class="alert-ok">@ViewBag.Ok</div>
+    }
+    @if (ViewBag.ApiError != null)
+    {
+        <div class="alert-error">@ViewBag.ApiError</div>
+    }
+
+    <div class="card">
+        <div class="card-header">Datos del Formulario</div>
+        <div class="card-body">
+
+            <div class="toolbar">
+                <a asp-action="Index" class="btn btn-outline">← Volver al listado</a>
+                <div class="form-actions">
+                    <button type="submit" form="frm-modificar" class="btn btn-primary">Guardar</button>
+                    <button type="button" class="btn btn-primary" onclick="mostrarModalCancelar()">Cancelar</button>
+                </div>
+            </div>
+
+            <form id="frm-modificar" asp-action="Modificar" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id_formulario" value="@Model.id_formulario" />
+
+                <div style="margin-bottom:1rem;">
+                    <label asp-for="id_persona">Persona</label>
+                    <select asp-for="id_persona">
+                        <option value="">-- Seleccionar --</option>
+                        @foreach (var kv in personas)
+                        {
+                            var id = kv.Key; var txt = kv.Value;
+                            <option value="@id" selected="@(id == selPersona)">@txt</option>
+                        }
+                    </select>
+                    <span asp-validation-for="id_persona" class="field-error"></span>
+                </div>
+
+                <div style="margin-bottom:1rem;">
+                    <label asp-for="id_tipoFormulario">Tipo de Formulario</label>
+                    <select asp-for="id_tipoFormulario">
+                        <option value="">-- Seleccionar --</option>
+                        @foreach (var kv in tipos)
+                        {
+                            var id = kv.Key; var txt = kv.Value;
+                            <option value="@id" selected="@(id == selTipo)">@txt</option>
+                        }
+                    </select>
+                    <span asp-validation-for="id_tipoFormulario" class="field-error"></span>
+                </div>
+
+                <div style="margin-bottom:1rem;">
+                    <label asp-for="fechaAltaFormulario">Fecha de Alta</label>
+                    <input asp-for="fechaAltaFormulario" type="datetime-local" value="@fechaStr" />
+                    <span asp-validation-for="fechaAltaFormulario" class="field-error"></span>
+                </div>
+
+                <div style="margin-bottom:1rem;">
+                    <label asp-for="id_usuario">Usuario (opcional)</label>
+                    <select asp-for="id_usuario">
+                        <option value="">-- Sin usuario --</option>
+                        @foreach (var kv in usuarios)
+                        {
+                            var id = kv.Key; var txt = kv.Value;
+                            <option value="@id" selected="@(selUsuario.HasValue && id == selUsuario.Value)">@txt</option>
+                        }
+                    </select>
+                    <span asp-validation-for="id_usuario" class="field-error"></span>
+                </div>
+
+                <div style="margin-bottom:1rem;">
+                    <label asp-for="id_estadoFormulario">Estado</label>
+                    <select asp-for="id_estadoFormulario">
+                        <option value="">-- Seleccionar --</option>
+                        @foreach (var kv in estados)
+                        {
+                            var id = kv.Key; var txt = kv.Value;
+                            <option value="@id" selected="@(id == selEstado)">@txt</option>
+                        }
+                    </select>
+                    <span asp-validation-for="id_estadoFormulario" class="field-error"></span>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        <div id="modal-cancelar" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4); z-index:9999;">
+            <div style="
+                    background:#fff; width:380px; max-width:90%;
+                    margin:10% auto; padding:2rem 2rem 1.5rem;
+                    border-radius:1rem; box-shadow:0 6px 12px rgba(0,0,0,0.25);
+                    text-align:center; font-family:'Segoe UI', sans-serif;">
+                <p style="font-size:1.2rem; color:#333; font-weight:600; margin-bottom:2rem;">
+                    ¿Realmente desea cancelar?
+                </p>
+                <div style="display:flex; justify-content:center; gap:1rem;">
+                    <a asp-action="Index" class="btn-modal">Sí</a>
+                    <button type="button" class="btn-modal" onclick="cerrarModalCancelar()">No</button>
+                </div>
+            </div>
+        </div>
+
+        <style>
+            .btn-modal {
+                background: #40ADB0;
+                color: #fff;
+                border: none;
+                padding: .6rem 1.2rem;
+                font-size: 1rem;
+                border-radius: .6rem;
+                cursor: pointer;
+                transition: background-color .3s;
+                text-decoration: none;
+                font-weight: 500;
+            }
+
+                .btn-modal:hover {
+                    background: #2e888b;
+                }
+        </style>
+
+        <script>
+            function mostrarModalCancelar(){ document.getElementById("modal-cancelar").style.display = "block"; }
+            function cerrarModalCancelar(){ document.getElementById("modal-cancelar").style.display = "none"; }
+        </script>
+    }
+}
+

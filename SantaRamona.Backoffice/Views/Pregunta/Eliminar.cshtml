@@ -1,0 +1,108 @@
+﻿@model SantaRamona.Backoffice.Models.Pregunta
+@{
+    ViewData["Title"] = "Eliminar Pregunta";
+    bool enUso = ViewBag.EnUso is bool b && b;
+    var tipoDesc = (string)(ViewBag.TipoDesc ?? Model.id_tipoFormulario.ToString());
+}
+
+<div class="container mt-4">
+    <h1 class="text-center fw-bold" style="color:#40ADB0; letter-spacing:.5px;">
+        ELIMINAR PREGUNTA
+    </h1>
+
+    @if (TempData["Error"] is string err)
+    {
+        <div class="alert mt-3" role="alert"
+             style="background:#ffecec; border:2px solid #ff6b6b; color:#a33; border-radius:10px;">
+            @err
+        </div>
+    }
+    @if (TempData["Ok"] is string ok)
+    {
+        <div class="alert mt-3" role="alert"
+             style="background:#EAF6F6; border:2px solid #40ADB0; color:#155e63; border-radius:10px;">
+            @ok
+        </div>
+    }
+
+    @if (enUso)
+    {
+        <div class="alert mt-3" role="alert"
+             style="background:#fff8e6; border:2px solid #f0ad4e; color:#8a6d3b; border-radius:10px;">
+            No se puede eliminar la pregunta porque está en uso (tiene respuestas asociadas).
+        </div>
+    }
+
+    <div class="card shadow-sm mt-3" style="border:2px solid #40ADB0; border-radius:14px;">
+        <div class="card-header" style="background:#40ADB0; color:#fff; border-top-left-radius:14px; border-top-right-radius:14px;">
+            <strong>Datos de la Pregunta</strong>
+        </div>
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <a asp-action="Index" class="btn"
+                   style="border:2px solid #40ADB0; color:#40ADB0; border-radius:10px;">← Volver al listado</a>
+
+                <div class="d-flex gap-2">
+                    @* Eliminar solo si NO está en uso *@
+                    @if (!enUso)
+                    {
+                        <button type="button" class="btn"
+                                data-bs-toggle="modal" data-bs-target="#confirmarEliminar"
+                                style="background:#40ADB0; color:#fff; border-radius:10px; padding:.5rem 1.25rem; border:2px solid #40ADB0;">
+                            Eliminar
+                        </button>
+                    }
+                    @* Cancelar SIEMPRE visible *@
+                    <a asp-action="Index" class="btn"
+                       style="background:#40ADB0; color:#fff; border-radius:10px; padding:.5rem 1.25rem; border:2px solid #40ADB0;">
+                        Cancelar
+                    </a>
+                </div>
+            </div>
+
+            @* 🔹 Mantuvimos solo estos dos campos visibles *@
+            <div class="mb-3">
+                <label class="form-label">Pregunta</label>
+                <input class="form-control" value="@Model.pregunta" disabled />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Tipo de Formulario</label>
+                <input class="form-control" value="@tipoDesc" disabled />
+            </div>
+        </div>
+    </div>
+
+    @* Modal solo si NO está en uso *@
+    @if (!enUso)
+    {
+        <div class="modal fade" id="confirmarEliminar" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content" style="border-radius:14px;">
+                    <div class="modal-header"
+                         style="background:#40ADB0; color:#fff; border-top-left-radius:14px; border-top-right-radius:14px;">
+                        <h5 class="modal-title">Confirmar eliminación</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body" style="color:#000;">
+                        ¿Realmente desea eliminar esta pregunta?
+                    </div>
+                    <div class="modal-footer" style="border-top:none;">
+                        <button type="button" class="btn" data-bs-dismiss="modal"
+                                style="background:#40ADB0; color:#fff; border-radius:10px; padding:.4rem 1rem; border:2px solid #40ADB0;">
+                            No
+                        </button>
+
+                        <form asp-action="Eliminar" method="post" class="d-inline">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@Model.id_pregunta" />
+                            <button type="submit" class="btn"
+                                    style="background:#40ADB0; color:#fff; border-radius:10px; padding:.4rem 1rem; border:2px solid #40ADB0;">
+                                Sí, eliminar
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
