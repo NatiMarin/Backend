@@ -94,7 +94,8 @@ namespace SantaRamona.Backoffice.Controllers
                     return RedirectToAction(nameof(Index));
                 }
 
-                return View(usuario);
+                return View("Detalle", usuario);
+
             }
             catch (Exception ex)
             {
@@ -104,79 +105,130 @@ namespace SantaRamona.Backoffice.Controllers
         }
 
         // GET: /Usuario/Crear
-  
+
+        // GET: /Usuario/Crear
         [HttpGet]
         public async Task<IActionResult> Crear()
         {
+            await CargarEstadosAsync();
+            var usuario = new Usuario
+            {
+                fechaAlta = DateTime.Now // 🔹 Fecha actual por defecto
+            };
+            return View(usuario);
+        }
+
+        // POST: /Usuario/Crear
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> Crear([FromForm] Usuario usuario)
+        {
+            // 🔹 Normalizar campos de texto
+            usuario.nombre = FormatearTexto(usuario.nombre);
+            usuario.apellido = FormatearTexto(usuario.apellido);
+            usuario.direccion = FormatearTexto(usuario.direccion);
+            usuario.departamento = FormatearTexto(usuario.departamento);
+            usuario.email = usuario.email?.Trim();
+            usuario.clave = usuario.clave?.Trim();
+
+            // 🔹 Si la fecha no se envió, usar fecha actual
+            if (usuario.fechaAlta == default)
+                usuario.fechaAlta = DateTime.Now;
+
+            if (!ModelState.IsValid)
+            {
+                await CargarEstadosAsync();
+                return View(usuario);
+            }
+
+            try
+            {
+                var client = _http.CreateClient("Api");
+                var content = new StringContent(JsonSerializer.Serialize(usuario), Encoding.UTF8, "application/json");
+                var resp = await client.PostAsync("/api/usuario", content);
+
+                var body = await resp.Content.ReadAsStringAsync();
+
+                // 🔹 Mostrar detalle exacto si hay error
+                if (!resp.IsSuccessStatusCode)
+                {
+                    ViewBag.ApiError = $"❌ Error al crear el usuario ({(int)resp.StatusCode} - {resp.ReasonPhrase})\n{body}";
+                    await CargarEstadosAsync();
+                    return View(usuario);
+                }
+
+                // 🔹 Todo ok
+                TempData["Ok"] = "Usuario creado correctamente.";
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ApiError = $"⚠️ Error inesperado: {ex.Message}";
+                await CargarEstadosAsync();
+                return View(usuario);
+            }
+        }
+
+
+        // 🔧 Helpers
+        private string FormatearTexto(string texto)
+        {
+            if (string.IsNullOrWhiteSpace(texto)) return texto;
+            texto = texto.Trim().ToLower();
+            return char.ToUpper(texto[0]) + texto.Substring(1);
+        }
+
+        private async Task CargarEstadosAsync()
+        {
             var client = _http.CreateClient("Api");
+            var resp = await client.GetAsync("/api/Estado_Usuario");
+            var estados = new Dictionary<int, string>();
+
+            if (resp.IsSuccessStatusCode)
+            {
+                var json = await resp.Content.ReadAsStringAsync();
+                var lista = JsonSerializer.Deserialize<IEnumerable<Estado_Usuario>>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                if (lista != null)
+                    estados = lista.ToDictionary(e => e.id_estadoUsuario, e => e.descripcion);
+            }
+
+            ViewBag.Estados = estados;
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> Modificar(int id)
+        {
+            var client = _http.CreateClient("Api");
+
+            // 🔹 Obtener usuario
+            var respUsuario = await client.GetAsync($"/api/usuario/{id}");
+            if (!respUsuario.IsSuccessStatusCode)
+            {
+                TempData["Error"] = "Error al obtener el usuario.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            var jsonUsuario = await respUsuario.Content.ReadAsStringAsync();
+            var usuario = JsonSerializer.Deserialize<Usuario>(jsonUsuario, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+            // 🔹 Obtener estados (IMPORTANTE)
+            var estados = new Dictionary<int, string>();
             var respEstados = await client.GetAsync("/api/Estado_Usuario");
 
-            var estados = new Dictionary<int, string>();
             if (respEstados.IsSuccessStatusCode)
             {
                 var jsonEstados = await respEstados.Content.ReadAsStringAsync();
-                var listaEstados = JsonSerializer.Deserialize<IEnumerable<Estado_Usuario>>(jsonEstados,
-                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-
+                var listaEstados = JsonSerializer.Deserialize<IEnumerable<Estado_Usuario>>(jsonEstados, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
                 if (listaEstados != null)
                     estados = listaEstados.ToDictionary(e => e.id_estadoUsuario, e => e.descripcion);
             }
 
             ViewBag.Estados = estados;
 
-            return View(new Usuario());
+            return View(usuario);
         }
 
 
-        // POST: /Usuario/Crear
-        [HttpPost, ValidateAntiForgeryToken]
-        public async Task<IActionResult> Crear([FromForm] Usuario usuario)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(usuario);
-            }
-
-            var client = _http.CreateClient("Api");
-            var content = new StringContent(JsonSerializer.Serialize(usuario), Encoding.UTF8, "application/json");
-            var resp = await client.PostAsync("/api/usuario", content);
-
-            if (!resp.IsSuccessStatusCode)
-            {
-                var body = await resp.Content.ReadAsStringAsync();
-                ViewBag.ApiError = $"POST /api/usuario -> {(int)resp.StatusCode} {resp.ReasonPhrase}. Respuesta: {body}";
-                return View(usuario);
-            }
-
-            TempData["Ok"] = "Usuario creado correctamente.";
-            return RedirectToAction(nameof(Index));
-        }
-
-        // GET: /Usuario/Modificar/5
-        [HttpGet]
-        public async Task<IActionResult> Modificar(int id)
-        {
-            var client = _http.CreateClient("Api");
-            var resp = await client.GetAsync($"/api/usuario/{id}");
-
-            if (resp.StatusCode == System.Net.HttpStatusCode.NotFound)
-            {
-                TempData["Error"] = "El usuario no existe.";
-                return RedirectToAction(nameof(Index));
-            }
-
-            if (!resp.IsSuccessStatusCode)
-            {
-                var body = await resp.Content.ReadAsStringAsync();
-                TempData["Error"] = $"GET /api/usuario/{id} -> {(int)resp.StatusCode} {resp.ReasonPhrase}. Respuesta: {body}";
-                return RedirectToAction(nameof(Index));
-            }
-
-            var json = await resp.Content.ReadAsStringAsync();
-            var model = JsonSerializer.Deserialize<Usuario>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-
-            return View(model);
-        }
 
         // POST: /Usuario/Modificar
         [HttpPost, ValidateAntiForgeryToken]
@@ -207,25 +259,46 @@ namespace SantaRamona.Backoffice.Controllers
         public async Task<IActionResult> Eliminar(int id)
         {
             var client = _http.CreateClient("Api");
-            var resp = await client.GetAsync($"/api/usuario/{id}");
 
-            if (resp.StatusCode == System.Net.HttpStatusCode.NotFound)
+            // 🔹 Obtener usuario
+            var respUsuario = await client.GetAsync($"/api/usuario/{id}");
+            if (respUsuario.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
                 TempData["Error"] = "El usuario no existe o ya fue eliminado.";
                 return RedirectToAction(nameof(Index));
             }
 
-            if (!resp.IsSuccessStatusCode)
+            if (!respUsuario.IsSuccessStatusCode)
             {
-                var body = await resp.Content.ReadAsStringAsync();
-                TempData["Error"] = $"GET /api/usuario/{id} -> {(int)resp.StatusCode} {resp.ReasonPhrase}. Respuesta: {body}";
+                var body = await respUsuario.Content.ReadAsStringAsync();
+                TempData["Error"] = $"GET /api/usuario/{id} -> {(int)respUsuario.StatusCode} {respUsuario.ReasonPhrase}. Respuesta: {body}";
                 return RedirectToAction(nameof(Index));
             }
 
-            var json = await resp.Content.ReadAsStringAsync();
-            var model = JsonSerializer.Deserialize<Usuario>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-            return View(model);
+            var jsonUsuario = await respUsuario.Content.ReadAsStringAsync();
+            var usuario = JsonSerializer.Deserialize<Usuario>(jsonUsuario, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+            // 🔹 Cargar estados (para que se muestre el nombre en la vista)
+            var estados = new Dictionary<int, string>();
+            var respEstados = await client.GetAsync("/api/Estado_Usuario");
+
+            if (respEstados.IsSuccessStatusCode)
+            {
+                var jsonEstados = await respEstados.Content.ReadAsStringAsync();
+                var listaEstados = JsonSerializer.Deserialize<IEnumerable<Estado_Usuario>>(jsonEstados, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                if (listaEstados != null)
+                    estados = listaEstados.ToDictionary(e => e.id_estadoUsuario, e => e.descripcion);
+            }
+
+            ViewBag.Estados = estados;
+
+            // 🔹 (Opcional) si querés mostrar el mensaje “no se puede eliminar porque está en uso”
+            ViewBag.Bloqueado = false;
+            ViewBag.Motivo = string.Empty;
+
+            return View(usuario);
         }
+
 
         // POST: /Usuario/Eliminar/5
         [HttpPost, ValidateAntiForgeryToken, ActionName("Eliminar")]

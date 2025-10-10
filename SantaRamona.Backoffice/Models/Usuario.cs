@@ -23,16 +23,19 @@ namespace SantaRamona.Backoffice.Models
         [RegularExpression(@"^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$", ErrorMessage = "El apellido solo puede contener letras y espacios.")]
         public string apellido { get; set; }
 
+        [Required(ErrorMessage = "La dirección es obligatoria.")]
         public string direccion { get; set; }
 
-        [Range(0, 99999, ErrorMessage = "Ingrese una altura válida (solo números).")]
+        [Required(ErrorMessage = "La altura es obligatoria.")]
+        [Range(1, 99999, ErrorMessage = "Ingrese una altura válida.")]
         public int altura { get; set; }
-        public string departamento { get; set; }
+        public string? departamento { get; set; }
 
-        [Range(1000000, 999999999, ErrorMessage = "Ingrese un teléfono válido.")]
+        [Required(ErrorMessage = "El teléfono 1 es obligatorio.")]
+        [RegularExpression(@"^[0-9]{6,15}$", ErrorMessage = "Ingrese un teléfono válido.")]
         public int telefono1 { get; set; }
 
-        [Range(1000000, 999999999, ErrorMessage = "Ingrese un teléfono válido.")]
+        [RegularExpression(@"^[0-9]{6,15}$", ErrorMessage = "Ingrese un teléfono válido.")]
         public int telefono2 { get; set; }
 
         public DateTime fechaAlta { get; set; }

@@ -1,0 +1,139 @@
+﻿body {
+    font-family: 'Helvetica', Arial, sans-serif;
+    background-color: #f7f9fa;
+    margin: 0;
+    padding: 0;
+}
+
+.main-container {
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 1rem;
+}
+
+.table-title {
+    text-align: center;
+    color: #40ADB0;
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+}
+
+/* 🎨 Tabla principal */
+.styled-table {
+    border-collapse: collapse;
+    width: 100%;
+    background-color: #fff;
+    border: 2px solid #40ADB0;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.styled-table th {
+    background-color: #40ADB0;
+    color: white;
+    text-align: center;
+    padding: 0.6rem; /* más compacto */
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.styled-table td {
+    text-align: center;
+    padding: 0.5rem 0.6rem; /* más compacto */
+    border-bottom: 1px solid #ddd;
+    font-size: 0.95rem;
+}
+
+.styled-table tr:nth-child(even) {
+    background-color: #f3f9f9;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 0.4rem;
+    justify-content: center;
+}
+
+/* 🩵 Botones base */
+.btn-editar,
+.btn-eliminar,
+.btn-detalle,
+.btn-crear {
+    border: none;
+    padding: 0.45rem 1rem;
+    border-radius: 0.3rem;
+    cursor: pointer;
+    color: #fff;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+/* 🔹 Botones principales */
+.btn-editar {
+    background-color: #40ADB0;
+}
+.btn-editar:hover {
+    background-color: #359498;
+    color: #fff;
+}
+
+/* 🩷 Botón eliminar */
+.btn-eliminar {
+    background-color: #A71A6C;
+}
+.btn-eliminar:hover {
+    background-color: #8b155c;
+    color: #fff;
+}
+
+/* 🔹 Botón ver */
+.btn-detalle {
+    background-color: #40ADB0;
+}
+.btn-detalle:hover {
+    background-color: #359498;
+    color: #fff;
+}
+
+/* 🩵 Botón crear */
+.btn-crear {
+    background-color: #40ADB0;
+    margin-bottom: 1rem;
+    display: inline-block;
+}
+.btn-crear:hover {
+    background-color: #359498;
+    color: #fff;
+}
+.field-error {
+    color: #A71A6C;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.alert-ok {
+    margin: 1rem 0;
+    padding: .8rem 1rem;
+    border: 2px solid #40ADB0;
+    background: #EAF6F6;
+    border-radius: .6rem;
+    color: #155e63;
+    font-weight: 600;
+}
+
+.alert-error {
+    margin: 1rem 0;
+    padding: .8rem 1rem;
+    border: 2px solid #A71A6C;
+    background: #ffecef;
+    border-radius: .6rem;
+    color: #A71A6C;
+    font-weight: 600;
+}
+select option:hover {
+    background-color: #FFE3E3 !important;
+}
