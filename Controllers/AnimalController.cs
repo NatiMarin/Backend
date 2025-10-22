@@ -54,7 +54,7 @@ namespace SantaRamona.Controllers
             dto.id_animal = 0;
 
             // (Opcional) validaciones simples de FKs > 0
-            if (dto.id_especie <= 0 || dto.id_raza <= 0 || dto.id_estado <= 0 || dto.id_usuario <= 0 || dto.id_tamano <= 0)
+            if (dto.id_especie <= 0 || dto.id_raza <= 0 || dto.id_estadoAnimal <= 0 || dto.id_usuario <= 0 || dto.id_tamano <= 0)
                 return BadRequest("id_especie, id_raza, id_estado, id_usuario e id_tamaño deben ser > 0.");
 
             _context.Animal.Add(dto);

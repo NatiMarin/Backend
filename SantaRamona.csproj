@@ -8,9 +8,13 @@
 
   <ItemGroup>
     <Compile Remove="SantaRamona.Backoffice\**" />
+    <Compile Remove="Views\**" />
     <Content Remove="SantaRamona.Backoffice\**" />
+    <Content Remove="Views\**" />
     <EmbeddedResource Remove="SantaRamona.Backoffice\**" />
+    <EmbeddedResource Remove="Views\**" />
     <None Remove="SantaRamona.Backoffice\**" />
+    <None Remove="Views\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -22,10 +26,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Views\" />
   </ItemGroup>
 
 </Project>
