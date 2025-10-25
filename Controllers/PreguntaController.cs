@@ -20,42 +20,26 @@ namespace SantaRamona.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Pregunta>>> GetPreguntas()
         {
-            return await _context.Pregunta.AsNoTracking().ToListAsync();
+            return await _context.Pregunta.ToListAsync();
         }
 
         // GET: api/Pregunta/5
-        [HttpGet("{id:int}")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<Pregunta>> GetPregunta(int id)
         {
-            var p = await _context.Pregunta.FindAsync(id);
-            if (p == null) return NotFound();
-            return p;
-        }
+            var pregunta = await _context.Pregunta.FindAsync(id);
+            if (pregunta == null)
+            {
+                return NotFound();
+            }
 
-        // GET: api/Pregunta/por-tipo/3   (extra útil)
-        [HttpGet("por-tipo/{tipoId:int}")]
-        public async Task<ActionResult<IEnumerable<Pregunta>>> GetPorTipo(int tipoId)
-        {
-            // (opcional) validar que exista el tipo
-            var tipoExiste = await _context.Tipo_Formulario.AnyAsync(t => t.id_tipoFormulario == tipoId);
-            if (!tipoExiste) return NotFound($"No existe Tipo_Formulario {tipoId}");
-
-            var lista = await _context.Pregunta
-                .Where(x => x.id_tipoFormulario == tipoId)
-                .AsNoTracking()
-                .ToListAsync();
-            return Ok(lista);
+            return pregunta;
         }
 
         // POST: api/Pregunta
         [HttpPost]
         public async Task<ActionResult<Pregunta>> PostPregunta(Pregunta pregunta)
         {
-            // (opcional) validar FK
-            var tipoOk = await _context.Tipo_Formulario
-                .AnyAsync(t => t.id_tipoFormulario == pregunta.id_tipoFormulario);
-            if (!tipoOk) return BadRequest($"id_tipoFormulario {pregunta.id_tipoFormulario} no existe.");
-
             _context.Pregunta.Add(pregunta);
             await _context.SaveChangesAsync();
 
@@ -63,15 +47,13 @@ namespace SantaRamona.Controllers
         }
 
         // PUT: api/Pregunta/5
-        [HttpPut("{id:int}")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> PutPregunta(int id, Pregunta pregunta)
         {
-            if (id != pregunta.id_pregunta) return BadRequest();
-
-            // (opcional) validar FK si cambió el tipo
-            var tipoOk = await _context.Tipo_Formulario
-                .AnyAsync(t => t.id_tipoFormulario == pregunta.id_tipoFormulario);
-            if (!tipoOk) return BadRequest($"id_tipoFormulario {pregunta.id_tipoFormulario} no existe.");
+            if (id != pregunta.id_pregunta)
+            {
+                return BadRequest();
+            }
 
             _context.Entry(pregunta).State = EntityState.Modified;
 
@@ -81,26 +63,38 @@ namespace SantaRamona.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!PreguntaExists(id)) return NotFound();
-                throw;
+                if (!PreguntaExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
             }
 
             return NoContent();
         }
 
         // DELETE: api/Pregunta/5
-        [HttpDelete("{id:int}")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePregunta(int id)
         {
-            var p = await _context.Pregunta.FindAsync(id);
-            if (p == null) return NotFound();
+            var pregunta = await _context.Pregunta.FindAsync(id);
+            if (pregunta == null)
+            {
+                return NotFound();
+            }
 
-            _context.Pregunta.Remove(p);
+            _context.Pregunta.Remove(pregunta);
             await _context.SaveChangesAsync();
+
             return NoContent();
         }
 
         private bool PreguntaExists(int id)
-            => _context.Pregunta.Any(e => e.id_pregunta == id);
+        {
+            return _context.Pregunta.Any(e => e.id_pregunta == id);
+        }
     }
 }

@@ -24,7 +24,7 @@ namespace SantaRamona.Controllers
         }
 
         // GET: api/TipoFormulario/5
-        [HttpGet("{id:int}")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<Tipo_Formulario>> GetTipoFormulario(int id)
         {
             var tipo = await _context.Tipo_Formulario.FindAsync(id);
@@ -32,6 +32,7 @@ namespace SantaRamona.Controllers
             {
                 return NotFound();
             }
+
             return tipo;
         }
 
@@ -39,6 +40,10 @@ namespace SantaRamona.Controllers
         [HttpPost]
         public async Task<ActionResult<Tipo_Formulario>> PostTipoFormulario(Tipo_Formulario tipo)
         {
+            // Evita que EF mande NULL y anule el DEFAULT de SQL
+            if (string.IsNullOrWhiteSpace(tipo.Estado))
+                tipo.Estado = "Activo";
+
             _context.Tipo_Formulario.Add(tipo);
             await _context.SaveChangesAsync();
 
@@ -46,13 +51,17 @@ namespace SantaRamona.Controllers
         }
 
         // PUT: api/TipoFormulario/5
-        [HttpPut("{id:int}")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> PutTipoFormulario(int id, Tipo_Formulario tipo)
         {
             if (id != tipo.id_tipoFormulario)
             {
                 return BadRequest();
             }
+
+            // Normaliza estado (si llegara vacío)
+            if (string.IsNullOrWhiteSpace(tipo.Estado))
+                tipo.Estado = "Activo";
 
             _context.Entry(tipo).State = EntityState.Modified;
 
@@ -63,15 +72,20 @@ namespace SantaRamona.Controllers
             catch (DbUpdateConcurrencyException)
             {
                 if (!TipoFormularioExists(id))
+                {
                     return NotFound();
-                throw;
+                }
+                else
+                {
+                    throw;
+                }
             }
 
             return NoContent();
         }
 
         // DELETE: api/TipoFormulario/5
-        [HttpDelete("{id:int}")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTipoFormulario(int id)
         {
             var tipo = await _context.Tipo_Formulario.FindAsync(id);
@@ -87,6 +101,8 @@ namespace SantaRamona.Controllers
         }
 
         private bool TipoFormularioExists(int id)
-            => _context.Tipo_Formulario.Any(e => e.id_tipoFormulario == id);
+        {
+            return _context.Tipo_Formulario.Any(e => e.id_tipoFormulario == id);
+        }
     }
 }

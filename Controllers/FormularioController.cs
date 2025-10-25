@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using SantaRamona.Data;        // Tu DbContext (ApplicationDbContext)
-using SantaRamona.Models;      // Tu entity Formulario (opcional si la tenés en otro namespace)
+using SantaRamona.Data;
+using SantaRamona.Models;
 
 namespace SantaRamona.Controllers
 {
@@ -9,126 +9,87 @@ namespace SantaRamona.Controllers
     [Route("api/[controller]")]
     public class FormularioController : ControllerBase
     {
-        private readonly ApplicationDbContext _db;
-        public FormularioController(ApplicationDbContext db) => _db = db;
+        private readonly ApplicationDbContext _context;
 
-        // ========= DTOs =========
-        public record FormCreateDto(int id_persona, int id_tipoFormulario, int? id_usuario, int id_estadoFormulario);
-        public record FormUpdateDto(int id_persona, int id_tipoFormulario, int? id_usuario, int id_estadoFormulario);
-        public record CambiarEstadoDto(int id_estadoFormulario);
+        public FormularioController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
 
-        // ========= GET: listar con filtros y paginado =========
+        // GET: api/Formulario
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<object>>> Get(
-            [FromQuery] int? personaId,
-            [FromQuery] int? tipoId,
-            [FromQuery] int? estadoId,
-            [FromQuery] int page = 1,
-            [FromQuery] int pageSize = 20)
+        public async Task<ActionResult<IEnumerable<Formulario>>> GetFormularios()
         {
-            if (page < 1) page = 1;
-
-            // ⚠️ Asegurate que en tu DbContext exista DbSet<Formulario> Formularios
-            var q = _db.Formulario
-                .AsNoTracking()
-                .AsQueryable();
-
-            if (personaId is not null) q = q.Where(f => f.id_persona == personaId);
-            if (tipoId is not null) q = q.Where(f => f.id_tipoFormulario == tipoId);
-            if (estadoId is not null) q = q.Where(f => f.id_estadoFormulario == estadoId);
-
-            var data = await q
-                .OrderByDescending(f => f.fechaAltaFormulario)
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .Select(f => new
-                {
-                    f.id_formulario,
-                    f.id_persona,
-                    f.id_tipoFormulario,
-                    f.id_usuario,
-                    f.id_estadoFormulario,
-                    f.fechaAltaFormulario
-                })
-                .ToListAsync();
-
-            return Ok(data);
+            // Si preferís devolver solo ciertos campos, podés proyectar con .Select(...)
+            return await _context.Formulario.AsNoTracking().ToListAsync();
         }
 
-        // ========= GET: detalle por id =========
+        // GET: api/Formulario/5
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<object>> GetById(int id)
+        public async Task<ActionResult<Formulario>> GetFormulario(int id)
         {
-            var f = await _db.Formulario.AsNoTracking().FirstOrDefaultAsync(x => x.id_formulario == id);
-            if (f is null) return NotFound();
-
-            return Ok(new
-            {
-                f.id_formulario,
-                f.id_persona,
-                f.id_tipoFormulario,
-                f.id_usuario,
-                f.id_estadoFormulario,
-                f.fechaAltaFormulario
-            });
+            var f = await _context.Formulario.AsNoTracking().FirstOrDefaultAsync(x => x.id_formulario == id);
+            if (f == null) return NotFound();
+            return f;
         }
 
-        // ========= POST: crear =========
+        // POST: api/Formulario
         [HttpPost]
-        public async Task<ActionResult<object>> Create([FromBody] FormCreateDto dto)
+        public async Task<ActionResult<Formulario>> PostFormulario(Formulario formulario)
         {
-            // Si tu tabla usa DEFAULT GETDATE(), no seteamos fechaAltaFormulario (lo pone SQL Server)
-            var entity = new Formulario
-            {
-                id_persona = dto.id_persona,
-                id_tipoFormulario = dto.id_tipoFormulario,
-                id_usuario = dto.id_usuario,
-                id_estadoFormulario = dto.id_estadoFormulario
-                // fechaAltaFormulario => lo setea la DB
-            };
+            // Normalizar estado si no vino
+            if (string.IsNullOrWhiteSpace(formulario.estado))
+                formulario.estado = "Pendiente";
 
-            _db.Formulario.Add(entity);
-            await _db.SaveChangesAsync();
+            // No seteamos fechaEnvio: lo hace la DB (DEFAULT GETDATE())
+            _context.Formulario.Add(formulario);
+            await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetById),
-                new { id = entity.id_formulario },
-                new
-                {
-                    entity.id_formulario,
-                    entity.id_persona,
-                    entity.id_tipoFormulario,
-                    entity.id_usuario,
-                    entity.id_estadoFormulario,
-                    entity.fechaAltaFormulario
-                });
+            return CreatedAtAction(nameof(GetFormulario), new { id = formulario.id_formulario }, formulario);
         }
 
-        // ========= PUT: actualizar todos los campos editables =========
+        // PUT: api/Formulario/5
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> Update(int id, [FromBody] FormUpdateDto dto)
+        public async Task<IActionResult> PutFormulario(int id, Formulario formulario)
         {
-            var f = await _db.Formulario.FirstOrDefaultAsync(x => x.id_formulario == id);
-            if (f is null) return NotFound();
+            if (id != formulario.id_formulario)
+                return BadRequest();
 
-            f.id_persona = dto.id_persona;
-            f.id_tipoFormulario = dto.id_tipoFormulario;
-            f.id_usuario = dto.id_usuario;
-            f.id_estadoFormulario = dto.id_estadoFormulario;
+            var f = await _context.Formulario.FirstOrDefaultAsync(x => x.id_formulario == id);
+            if (f == null) return NotFound();
 
-            await _db.SaveChangesAsync();
+            // Actualizamos solo campos editables desde el backoffice
+            f.id_persona = formulario.id_persona;
+            f.id_tipoFormulario = formulario.id_tipoFormulario;
+            f.estado = string.IsNullOrWhiteSpace(formulario.estado) ? f.estado : formulario.estado;
+            // NO tocamos f.fechaEnvio (la conserva)
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!FormularioExists(id)) return NotFound();
+                throw;
+            }
+
             return NoContent();
         }
 
-        // ========= DELETE: (opcional) borrar =========
+        // DELETE: api/Formulario/5
         [HttpDelete("{id:int}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> DeleteFormulario(int id)
         {
-            var f = await _db.Formulario.FirstOrDefaultAsync(x => x.id_formulario == id);
-            if (f is null) return NotFound();
+            var f = await _context.Formulario.FindAsync(id);
+            if (f == null) return NotFound();
 
-            _db.Formulario.Remove(f);
-            await _db.SaveChangesAsync();
+            _context.Formulario.Remove(f);
+            await _context.SaveChangesAsync();
             return NoContent();
         }
+
+        private bool FormularioExists(int id)
+            => _context.Formulario.Any(e => e.id_formulario == id);
     }
 }
