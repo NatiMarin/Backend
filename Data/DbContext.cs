@@ -21,6 +21,7 @@ namespace SantaRamona.Data
         public DbSet<Tipo_Formulario> Tipo_Formulario { get; set; }
         public DbSet<Permiso> Permiso { get; set; }
         public DbSet<Rol> Rol { get; set; }
+        public DbSet<Usuario_Rol> Usuario_Rol { get; set; }
         public DbSet<Tamano> Tamano { get; set; }
         public DbSet<Animal> Animal { get; set; }
         public DbSet<Historial_Medico> Historial_Medico { get; set; }
@@ -33,5 +34,29 @@ namespace SantaRamona.Data
         public DbSet<Respuesta> Respuesta { get; set; }
         public DbSet<Donacion> Donacion { get; set; }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            // --- clave compuesta + FKs para la tabla puente USUARIO_ROL ---
+            modelBuilder.Entity<Usuario_Rol>(entity =>
+            {
+                // Si tu tabla en DB se llama USUARIO_ROL, descomenta:
+                // entity.ToTable("USUARIO_ROL");
+
+                entity.HasKey(ur => new { ur.id_usuario, ur.id_rol });
+
+                entity.HasOne(ur => ur.Usuario)
+                      .WithMany() // si querés navegación, cambiá a .WithMany(u => u.UsuarioRoles)
+                      .HasForeignKey(ur => ur.id_usuario)
+                      .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(ur => ur.Rol)
+                      .WithMany()
+                      .HasForeignKey(ur => ur.id_rol)
+                      .OnDelete(DeleteBehavior.Cascade);
+            });
+        }
     }
+
 }

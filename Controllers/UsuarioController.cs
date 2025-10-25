@@ -16,6 +16,37 @@ namespace SantaRamona.Controllers
 
         public UsuarioController(ApplicationDbContext context) => _context = context;
 
+        [HttpPut("{id:int}/rol/{idRol:int}")]
+        public async Task<IActionResult> SetRolUnico(int id, int idRol)
+        {
+            var existeUsuario = await _context.Usuario.AnyAsync(u => u.id_usuario == id);
+            if (!existeUsuario) return NotFound("El usuario no existe.");
+
+            var existeRol = await _context.Rol.AnyAsync(r => r.id_rol == idRol);
+            if (!existeRol) return BadRequest("El rol indicado no existe.");
+
+            using var tx = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                // 1) borro relaciones previas
+                var actuales = _context.Usuario_Rol.Where(ur => ur.id_usuario == id);
+                _context.Usuario_Rol.RemoveRange(actuales);
+                await _context.SaveChangesAsync();
+
+                // 2) inserto la nueva relación
+                _context.Usuario_Rol.Add(new Usuario_Rol { id_usuario = id, id_rol = idRol });
+                await _context.SaveChangesAsync();
+
+                await tx.CommitAsync();
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await tx.RollbackAsync();
+                return StatusCode(500, $"Error al asignar rol: {ex.Message}");
+            }
+        }
+
         // GET: api/usuario?pagina=1&pageSize=20
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Usuario>>> GetAll([FromQuery] int pagina = 1, [FromQuery] int pageSize = 20)
