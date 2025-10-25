@@ -14,8 +14,12 @@ namespace SantaRamona.Controllers
     {
         private readonly ApplicationDbContext _context;
 
-        public PersonaController(ApplicationDbContext context) => _context = context;
+        public PersonaController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
 
+        // ===================== GET (Paginado) =====================
         // GET: api/persona?pagina=1&pageSize=20
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Persona>>> GetAll([FromQuery] int pagina = 1, [FromQuery] int pageSize = 20)
@@ -33,6 +37,7 @@ namespace SantaRamona.Controllers
             return Ok(data);
         }
 
+        // ===================== GET por ID =====================
         // GET: api/persona/5
         [HttpGet("{id:int}")]
         public async Task<ActionResult<Persona>> GetById(int id)
@@ -43,13 +48,20 @@ namespace SantaRamona.Controllers
 
             return persona is null ? NotFound() : Ok(persona);
         }
+
+        // ===================== POST =====================
+        // POST: api/persona
         [HttpPost]
         public async Task<ActionResult<Persona>> Create([FromBody] Persona dto)
         {
             dto.id_persona = 0;
 
+            // Validaciones básicas
             if (string.IsNullOrWhiteSpace(dto.nombre))
                 return BadRequest("El campo 'nombre' es obligatorio.");
+
+            if (string.IsNullOrWhiteSpace(dto.apellido))
+                return BadRequest("El campo 'apellido' es obligatorio.");
 
             if (dto.dni <= 0)
                 return BadRequest("Debe ingresar un DNI válido (mayor a 0).");
@@ -57,12 +69,14 @@ namespace SantaRamona.Controllers
             if (dto.fechaIngreso == default)
                 dto.fechaIngreso = DateTime.Now;
 
+            // Guardar
             _context.Persona.Add(dto);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetById), new { id = dto.id_persona }, dto);
         }
 
+        // ===================== PUT =====================
         // PUT: api/persona/5
         [HttpPut("{id:int}")]
         public async Task<IActionResult> Update(int id, [FromBody] Persona dto)
@@ -81,13 +95,15 @@ namespace SantaRamona.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!await _context.Persona.AnyAsync(p => p.id_persona == id)) return NotFound();
+                if (!await _context.Persona.AnyAsync(p => p.id_persona == id))
+                    return NotFound();
                 throw;
             }
 
             return NoContent();
         }
 
+        // ===================== DELETE =====================
         // DELETE: api/persona/5
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete(int id)
