@@ -16,8 +16,7 @@ namespace SantaRamona.Models
         public string direccion { get; set; }
         public int altura { get; set; }
         public string departamento { get; set; }
-        public int telefono1 { get; set; }
-        public int telefono2 { get; set; }
+        public int telefono { get; set; }
         public DateTime fechaAlta { get; set; }
         public int id_estadoUsuario { get; set; }
 
