@@ -28,6 +28,8 @@ namespace SantaRamona.Data
         public DbSet<Persona> Persona { get; set; }
         public DbSet<Usuario> Usuario { get; set; }
         public DbSet<Pension> Pension { get; set; }
+        public DbSet<Provincia> Provincia { get; set; }
+        public DbSet<Localidad> Localidad { get; set; }
         public DbSet<Seguimiento> Seguimiento { get; set; }
         public DbSet<Formulario> Formulario { get; set; }
         public DbSet<Pregunta> Pregunta {  get; set; }
