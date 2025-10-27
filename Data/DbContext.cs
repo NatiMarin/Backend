@@ -1,15 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿// SantaRamona.Data/ApplicationDbContext.cs
+using Microsoft.EntityFrameworkCore;
 using SantaRamona.Models;
-using System.Collections.Generic;
 
 namespace SantaRamona.Data
 {
     public class ApplicationDbContext : DbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-            : base(options)
-        {
-        }
+            : base(options) { }
+
         public DbSet<Raza> Raza { get; set; }
         public DbSet<Especie> Especie { get; set; }
         public DbSet<Estado_Animal> Estado_Animal { get; set; }
@@ -32,7 +31,7 @@ namespace SantaRamona.Data
         public DbSet<Localidad> Localidad { get; set; }
         public DbSet<Seguimiento> Seguimiento { get; set; }
         public DbSet<Formulario> Formulario { get; set; }
-        public DbSet<Pregunta> Pregunta {  get; set; }
+        public DbSet<Pregunta> Pregunta { get; set; }
         public DbSet<Respuesta> Respuesta { get; set; }
         public DbSet<Donacion> Donacion { get; set; }
 
@@ -40,16 +39,18 @@ namespace SantaRamona.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // --- clave compuesta + FKs para la tabla puente USUARIO_ROL ---
+            // === Mapear tablas exactas (explícito y prolijo) ===
+            modelBuilder.Entity<Usuario>().ToTable("USUARIO");
+            modelBuilder.Entity<Rol>().ToTable("ROL");
+            modelBuilder.Entity<Usuario_Rol>().ToTable("USUARIO_ROL");
+
+            // === Clave compuesta y FKs de USUARIO_ROL ===
             modelBuilder.Entity<Usuario_Rol>(entity =>
             {
-                // Si tu tabla en DB se llama USUARIO_ROL, descomenta:
-                // entity.ToTable("USUARIO_ROL");
-
                 entity.HasKey(ur => new { ur.id_usuario, ur.id_rol });
 
                 entity.HasOne(ur => ur.Usuario)
-                      .WithMany() // si querés navegación, cambiá a .WithMany(u => u.UsuarioRoles)
+                      .WithMany() // si luego agregás colecciones, cámbialo por .WithMany(u => u.UsuarioRoles)
                       .HasForeignKey(ur => ur.id_usuario)
                       .OnDelete(DeleteBehavior.Cascade);
 
@@ -58,7 +59,17 @@ namespace SantaRamona.Data
                       .HasForeignKey(ur => ur.id_rol)
                       .OnDelete(DeleteBehavior.Cascade);
             });
+
+            // Reglas mínimas (opcional, pero útil)
+            modelBuilder.Entity<Usuario>(e =>
+            {
+                e.Property(x => x.email).IsRequired();
+                e.Property(x => x.clave).IsRequired();
+            });
+            modelBuilder.Entity<Rol>(e =>
+            {
+                e.Property(x => x.descripcion).IsRequired();
+            });
         }
     }
-
 }

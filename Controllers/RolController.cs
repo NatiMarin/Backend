@@ -1,12 +1,16 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using SantaRamona.Models;
 using SantaRamona.Data;
+using SantaRamona.Models;
+using SantaRamona.Models.Dto;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace SantaRamona.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class RolController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -16,82 +20,134 @@ namespace SantaRamona.Controllers
             _context = context;
         }
 
-        // GET: api/Rol
+        // ===========================
+        // GET: api/rol
+        // Lista completa de roles
+        // ===========================
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Rol>>> GetRols()
+        public async Task<ActionResult<IEnumerable<Rol>>> GetAll()
         {
-            return await _context.Rol.ToListAsync();
+            var roles = await _context.Rol
+                .AsNoTracking()
+                .OrderBy(r => r.id_rol)
+                .ToListAsync();
+
+            return Ok(roles);
         }
 
-        // GET: api/Rol/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Rol>> GetRol(int id)
+        // =========================================
+        // GET: api/rol/select
+        // Versión liviana (ideal para combos)
+        // =========================================
+        [HttpGet("select")]
+        public async Task<ActionResult<IEnumerable<RolDto>>> GetForSelect()
         {
-            var rol = await _context.Rol.FindAsync(id);
-            if (rol == null)
-            {
-                return NotFound();
-            }
-            return rol;
+            var roles = await _context.Rol
+                .AsNoTracking()
+                .OrderBy(r => r.descripcion)
+                .Select(r => new RolDto(r.id_rol, r.descripcion))
+                .ToListAsync();
+
+            return Ok(roles);
         }
 
-        // POST: api/Rol
+        // ===========================
+        // GET: api/rol/{id}
+        // Rol por id
+        // ===========================
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<Rol>> GetById(int id)
+        {
+            var rol = await _context.Rol
+                .AsNoTracking()
+                .FirstOrDefaultAsync(r => r.id_rol == id);
+
+            return rol is null ? NotFound() : Ok(rol);
+        }
+
+        // ===========================
+        // POST: api/rol
+        // Crear rol
+        // ===========================
         [HttpPost]
-        public async Task<ActionResult<Rol>> PostRol(Rol rol)
+        public async Task<ActionResult<Rol>> Create([FromBody] Rol rol)
         {
+            // Validación mínima
+            if (string.IsNullOrWhiteSpace(rol.descripcion))
+                return BadRequest("La descripción es obligatoria.");
+
             _context.Rol.Add(rol);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetRol), new { id = rol.id_rol }, rol);
+            return CreatedAtAction(nameof(GetById), new { id = rol.id_rol }, rol);
         }
 
-        // PUT: api/Rol/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutRol(int id, Rol rol)
+        // ===========================
+        // PUT: api/rol/{id}
+        // Actualizar rol
+        // ===========================
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> Update(int id, [FromBody] Rol rol)
         {
             if (id != rol.id_rol)
-            {
-                return BadRequest();
-            }
+                return BadRequest("El ID de la URL no coincide con el del cuerpo.");
+
+            var exists = await _context.Rol.AnyAsync(r => r.id_rol == id);
+            if (!exists) return NotFound();
 
             _context.Entry(rol).State = EntityState.Modified;
+
             try
             {
                 await _context.SaveChangesAsync();
+                return NoContent();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!RolExists(id))
-                {
+                if (!await _context.Rol.AnyAsync(r => r.id_rol == id))
                     return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                throw;
             }
-            return NoContent();
         }
 
-        // DELETE: api/Rol/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteRol(int id)
+        // ===========================
+        // DELETE: api/rol/{id}
+        // Eliminar rol
+        // ===========================
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> Delete(int id)
         {
             var rol = await _context.Rol.FindAsync(id);
-            if (rol == null)
-            {
-                return NotFound();
-            }
+            if (rol is null) return NotFound();
 
             _context.Rol.Remove(rol);
             await _context.SaveChangesAsync();
-
             return NoContent();
         }
 
-        private bool RolExists(int id)
+        // ============================================================
+        // (Opcional) Si te sirve: usuarios que poseen un rol concreto
+        // GET: api/rol/{id}/usuarios
+        // Útil para auditoría o para mostrar desde el rol hacia usuarios.
+        // ============================================================
+        [HttpGet("{id:int}/usuarios")]
+        public async Task<ActionResult<IEnumerable<object>>> GetUsuariosConRol(int id)
         {
-            return _context.Rol.Any(e => e.id_rol == id);
+            var existeRol = await _context.Rol.AnyAsync(r => r.id_rol == id);
+            if (!existeRol) return NotFound($"No existe rol con id {id}");
+
+            var usuarios = await _context.Usuario_Rol
+                .Where(ur => ur.id_rol == id)
+                .Select(ur => new
+                {
+                    ur.Usuario!.id_usuario,
+                    ur.Usuario.nombre,
+                    ur.Usuario.apellido,
+                    ur.Usuario.email
+                })
+                .ToListAsync();
+
+            return Ok(usuarios);
         }
     }
 }

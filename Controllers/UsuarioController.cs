@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿// SantaRamona.Controllers/UsuarioController.cs
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SantaRamona.Data;
 using SantaRamona.Models;
+using SantaRamona.Models.Dto;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,7 +15,6 @@ namespace SantaRamona.Controllers
     public class UsuarioController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-
         public UsuarioController(ApplicationDbContext context) => _context = context;
 
         [HttpPut("{id:int}/rol/{idRol:int}")]
@@ -28,12 +29,10 @@ namespace SantaRamona.Controllers
             using var tx = await _context.Database.BeginTransactionAsync();
             try
             {
-                // 1) borro relaciones previas
                 var actuales = _context.Usuario_Rol.Where(ur => ur.id_usuario == id);
                 _context.Usuario_Rol.RemoveRange(actuales);
                 await _context.SaveChangesAsync();
 
-                // 2) inserto la nueva relación
                 _context.Usuario_Rol.Add(new Usuario_Rol { id_usuario = id, id_rol = idRol });
                 await _context.SaveChangesAsync();
 
@@ -47,32 +46,56 @@ namespace SantaRamona.Controllers
             }
         }
 
-        // GET: api/usuario?pagina=1&pageSize=20
+        // === NUEVO: Roles del usuario ===
+        // GET: api/usuario/{id}/roles
+        [HttpGet("{id:int}/roles")]
+        public async Task<ActionResult<IEnumerable<RolDto>>> GetRolesByUsuario(int id)
+        {
+            var existe = await _context.Usuario.AnyAsync(u => u.id_usuario == id);
+            if (!existe) return NotFound($"No existe usuario con id {id}");
+
+            var roles = await _context.Usuario_Rol
+                .Where(ur => ur.id_usuario == id)
+                .Select(ur => new RolDto(ur.Rol!.id_rol, ur.Rol.descripcion))
+                .ToListAsync();
+
+            return Ok(roles);
+        }
+
+        // === NUEVO: Roles NO asignados al usuario (útil para combo “agregar rol”) ===
+        // GET: api/usuario/{id}/roles/disponibles
+        [HttpGet("{id:int}/roles/disponibles")]
+        public async Task<ActionResult<IEnumerable<RolDto>>> GetRolesNoAsignados(int id)
+        {
+            var asignados = _context.Usuario_Rol
+                .Where(ur => ur.id_usuario == id)
+                .Select(ur => ur.id_rol);
+
+            var disponibles = await _context.Rol
+                .Where(r => !asignados.Contains(r.id_rol))
+                .Select(r => new RolDto(r.id_rol, r.descripcion))
+                .ToListAsync();
+
+            return Ok(disponibles);
+        }
+
+        // === lo tuyo existente ===
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Usuario>>> GetAll([FromQuery] int pagina = 1, [FromQuery] int pageSize = 20)
         {
-            try
-            {
-                if (pagina < 1) pagina = 1;
-                if (pageSize < 1 || pageSize > 200) pageSize = 20;
+            if (pagina < 1) pagina = 1;
+            if (pageSize < 1 || pageSize > 200) pageSize = 20;
 
-                var data = await _context.Usuario
-                    .AsNoTracking()
-                    .OrderBy(u => u.id_usuario)
-                    .Skip((pagina - 1) * pageSize)
-                    .Take(pageSize)
-                    .ToListAsync();
+            var data = await _context.Usuario
+                .AsNoTracking()
+                .OrderBy(u => u.id_usuario)
+                .Skip((pagina - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
 
-                return Ok(data);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Error interno: {ex.Message} | Inner: {ex.InnerException?.Message}");
-            }
+            return Ok(data);
         }
 
-
-        // GET: api/usuario/5
         [HttpGet("{id:int}")]
         public async Task<ActionResult<Usuario>> GetById(int id)
         {
@@ -83,7 +106,6 @@ namespace SantaRamona.Controllers
             return usuario is null ? NotFound() : Ok(usuario);
         }
 
-        // POST: api/usuario
         [HttpPost]
         public async Task<ActionResult<Usuario>> Create([FromBody] Usuario dto)
         {
@@ -108,7 +130,6 @@ namespace SantaRamona.Controllers
             return CreatedAtAction(nameof(GetById), new { id = dto.id_usuario }, dto);
         }
 
-        // PUT: api/usuario/5
         [HttpPut("{id:int}")]
         public async Task<IActionResult> Update(int id, [FromBody] Usuario dto)
         {
@@ -133,7 +154,6 @@ namespace SantaRamona.Controllers
             return NoContent();
         }
 
-        // DELETE: api/usuario/5
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete(int id)
         {
