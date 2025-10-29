@@ -35,6 +35,7 @@ namespace SantaRamona.Data
         public DbSet<Respuesta> Respuesta { get; set; }
         public DbSet<Donacion> Donacion { get; set; }
 
+        public DbSet<Punto_Acopio> Punto_Acopio { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
