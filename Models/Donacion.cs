@@ -7,9 +7,9 @@ namespace SantaRamona.Models
         [Key]
         public int id_donacion { get; set; }
 
-        // 'M' = Medicamentos | 'I' = Insumos | B = BANCO | MP = Mercado Pago
+        // 'M' = Medicamentos | 'I' = Insumos | B = BANCO | P = No Bancario
         [Required]
-        [RegularExpression("^(M|I|B|MP)$", ErrorMessage = "Seleccione 'M' (Medicamento) o 'I' (Insumo) o 'B' (Banco) o 'MP' (Mercado Pago).")] 
+        [RegularExpression("^(M|I|B|P)$", ErrorMessage = "Seleccione 'M' (Medicamento) o 'I' (Insumo) o 'B' (Banco) o 'P' (No Bancario).")] 
         public string tipo { get; set; }
 
         [StringLength(40)]
