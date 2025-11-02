@@ -26,6 +26,20 @@ namespace SantaRamona.Controllers
             var existeRol = await _context.Rol.AnyAsync(r => r.id_rol == idRol);
             if (!existeRol) return BadRequest("El rol indicado no existe.");
 
+            // --- REGLA: no permitir que el ÚLTIMO admin pase a no-admin ---
+            var adminId = await GetAdminRoleIdAsync();
+            if (adminId == null) return StatusCode(500, "Rol 'administrador' no configurado.");
+
+            var rolActual = await GetCurrentRoleIdAsync(id);
+            if (rolActual == adminId.Value)
+            {
+                var totalAdmins = await CountAdminsAsync(adminId.Value);
+                // si es el único admin y lo quieren pasar a otro rol distinto de admin -> bloquear
+                if (totalAdmins == 1 && idRol != adminId.Value)
+                    return Conflict("No se puede cambiar el rol: es el único Administrador del sistema.");
+            }
+            // ----------------------------------------------------------------
+
             using var tx = await _context.Database.BeginTransactionAsync();
             try
             {
@@ -79,7 +93,7 @@ namespace SantaRamona.Controllers
             return Ok(disponibles);
         }
 
-        // === lo tuyo existente ===
+        
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Usuario>>> GetAll([FromQuery] int pagina = 1, [FromQuery] int pageSize = 20)
         {
@@ -164,5 +178,63 @@ namespace SantaRamona.Controllers
             await _context.SaveChangesAsync();
             return NoContent();
         }
+
+        private const string ADMIN_ROLE_NAME = "administrador";
+
+        private async Task<int?> GetAdminRoleIdAsync()
+        {
+            return await _context.Rol
+                .Where(r => (r.descripcion ?? "").Trim().ToLower() == ADMIN_ROLE_NAME)
+                .Select(r => (int?)r.id_rol)
+                .FirstOrDefaultAsync();
+        }
+
+        private async Task<int> CountAdminsAsync(int adminRoleId)
+        {
+            // cantidad de usuarios (distintos) que hoy tienen el rol admin
+            return await _context.Usuario_Rol
+                .Where(ur => ur.id_rol == adminRoleId)
+                .Select(ur => ur.id_usuario)
+                .Distinct()
+                .CountAsync();
+        }
+
+        private async Task<int?> GetCurrentRoleIdAsync(int idUsuario)
+        {
+            return await _context.Usuario_Rol
+                .Where(ur => ur.id_usuario == idUsuario)
+                .Select(ur => (int?)ur.id_rol)
+                .FirstOrDefaultAsync();
+        }
+        // DELETE: api/usuario/{id}/rol
+        [HttpDelete("{id:int}/rol")]
+        public async Task<IActionResult> RemoveRol(int id)
+        {
+            var usuarioExiste = await _context.Usuario.AnyAsync(u => u.id_usuario == id);
+            if (!usuarioExiste) return NotFound("El usuario no existe.");
+
+            var adminId = await GetAdminRoleIdAsync();
+            if (adminId == null) return StatusCode(500, "Rol 'administrador' no configurado.");
+
+            var rolActual = await GetCurrentRoleIdAsync(id);
+            if (rolActual == null)
+                return NoContent(); // ya no tiene rol (idempotente)
+
+            // --- REGLA: no permitir quitar el rol al ÚLTIMO admin ---
+            if (rolActual.Value == adminId.Value)
+            {
+                var totalAdmins = await CountAdminsAsync(adminId.Value);
+                if (totalAdmins == 1)
+                    return Conflict("No se puede quitar el rol: es el único Administrador del sistema.");
+            }
+            // --------------------------------------------------------
+
+            var links = _context.Usuario_Rol.Where(ur => ur.id_usuario == id);
+            _context.Usuario_Rol.RemoveRange(links);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
     }
 }
