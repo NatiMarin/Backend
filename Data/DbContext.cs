@@ -8,8 +8,7 @@ namespace SantaRamona.Data
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options) { }
-
-        public DbSet<Raza> Raza { get; set; }
+              
         public DbSet<Especie> Especie { get; set; }
         public DbSet<Estado_Animal> Estado_Animal { get; set; }
         public DbSet<Estado_Usuario> Estado_Usuario { get; set; }

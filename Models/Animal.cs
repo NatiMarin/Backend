@@ -13,7 +13,6 @@ namespace SantaRamona.Models
         public byte[]? imagen { get; set; } // se guarda como varbinary(MAX)
         public int id_especie { get; set; }
         public int id_tamano { get; set; }
-        public int id_raza { get; set; }
         public int id_estadoAnimal { get; set; }
         public int? id_persona { get; set; }
         public int? id_pension { get; set; }
