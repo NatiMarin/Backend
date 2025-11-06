@@ -72,7 +72,6 @@ namespace SantaRamona.Controllers
         [HttpPost]
         public async Task<ActionResult<Rol>> Create([FromBody] Rol rol)
         {
-            // Validación mínima
             if (string.IsNullOrWhiteSpace(rol.descripcion))
                 return BadRequest("La descripción es obligatoria.");
 
@@ -120,30 +119,35 @@ namespace SantaRamona.Controllers
             var rol = await _context.Rol.FindAsync(id);
             if (rol is null) return NotFound();
 
+            // 🔒 Verificar si el rol está en uso (usuarios con ese id_rol)
+            bool enUso = await _context.Usuario.AnyAsync(u => u.id_rol == id);
+            if (enUso)
+                return Conflict("No puedes eliminar este rol porque está asignado a uno o más usuarios.");
+
             _context.Rol.Remove(rol);
             await _context.SaveChangesAsync();
             return NoContent();
         }
 
         // ============================================================
-        // (Opcional) Si te sirve: usuarios que poseen un rol concreto
         // GET: api/rol/{id}/usuarios
-        // Útil para auditoría o para mostrar desde el rol hacia usuarios.
+        // Usuarios que poseen un rol concreto (1–N)
         // ============================================================
         [HttpGet("{id:int}/usuarios")]
         public async Task<ActionResult<IEnumerable<object>>> GetUsuariosConRol(int id)
         {
             var existeRol = await _context.Rol.AnyAsync(r => r.id_rol == id);
-            if (!existeRol) return NotFound($"No existe rol con id {id}");
+            if (!existeRol)
+                return NotFound($"No existe rol con id {id}.");
 
-            var usuarios = await _context.Usuario_Rol
-                .Where(ur => ur.id_rol == id)
-                .Select(ur => new
+            var usuarios = await _context.Usuario
+                .Where(u => u.id_rol == id)
+                .Select(u => new
                 {
-                    ur.Usuario!.id_usuario,
-                    ur.Usuario.nombre,
-                    ur.Usuario.apellido,
-                    ur.Usuario.email
+                    u.id_usuario,
+                    u.nombre,
+                    u.apellido,
+                    u.email
                 })
                 .ToListAsync();
 

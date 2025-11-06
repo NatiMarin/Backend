@@ -17,5 +17,6 @@ namespace SantaRamona.Models
         public int telefono { get; set; }
         public DateTime fechaAlta { get; set; }
         public int id_estadoUsuario { get; set; }
+        public int id_rol { get; set; }
     }
 }

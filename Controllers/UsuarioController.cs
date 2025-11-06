@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SantaRamona.Data;
 using SantaRamona.Models;
-using SantaRamona.Models.Dto;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,69 +16,20 @@ namespace SantaRamona.Controllers
         private readonly ApplicationDbContext _context;
         public UsuarioController(ApplicationDbContext context) => _context = context;
 
-        [HttpPut("{id:int}/rol/{idRol:int}")]
-        public async Task<IActionResult> SetRolUnico(int id, int idRol)
+        private const string ADMIN_ROLE_NAME = "administrador";
+
+        private async Task<int?> GetAdminRoleIdAsync()
         {
-            var existeUsuario = await _context.Usuario.AnyAsync(u => u.id_usuario == id);
-            if (!existeUsuario) return NotFound("El usuario no existe.");
-
-            var existeRol = await _context.Rol.AnyAsync(r => r.id_rol == idRol);
-            if (!existeRol) return BadRequest("El rol indicado no existe.");
-
-            using var tx = await _context.Database.BeginTransactionAsync();
-            try
-            {
-                var actuales = _context.Usuario_Rol.Where(ur => ur.id_usuario == id);
-                _context.Usuario_Rol.RemoveRange(actuales);
-                await _context.SaveChangesAsync();
-
-                _context.Usuario_Rol.Add(new Usuario_Rol { id_usuario = id, id_rol = idRol });
-                await _context.SaveChangesAsync();
-
-                await tx.CommitAsync();
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                await tx.RollbackAsync();
-                return StatusCode(500, $"Error al asignar rol: {ex.Message}");
-            }
+            return await _context.Rol
+                .Where(r => (r.descripcion ?? "").Trim().ToLower() == ADMIN_ROLE_NAME)
+                .Select(r => (int?)r.id_rol)
+                .FirstOrDefaultAsync();
         }
 
-        // === NUEVO: Roles del usuario ===
-        // GET: api/usuario/{id}/roles
-        [HttpGet("{id:int}/roles")]
-        public async Task<ActionResult<IEnumerable<RolDto>>> GetRolesByUsuario(int id)
-        {
-            var existe = await _context.Usuario.AnyAsync(u => u.id_usuario == id);
-            if (!existe) return NotFound($"No existe usuario con id {id}");
+        private Task<int> CountAdminsAsync(int adminRoleId)
+            => _context.Usuario.CountAsync(u => u.id_rol == adminRoleId);
 
-            var roles = await _context.Usuario_Rol
-                .Where(ur => ur.id_usuario == id)
-                .Select(ur => new RolDto(ur.Rol!.id_rol, ur.Rol.descripcion))
-                .ToListAsync();
-
-            return Ok(roles);
-        }
-
-        // === NUEVO: Roles NO asignados al usuario (útil para combo “agregar rol”) ===
-        // GET: api/usuario/{id}/roles/disponibles
-        [HttpGet("{id:int}/roles/disponibles")]
-        public async Task<ActionResult<IEnumerable<RolDto>>> GetRolesNoAsignados(int id)
-        {
-            var asignados = _context.Usuario_Rol
-                .Where(ur => ur.id_usuario == id)
-                .Select(ur => ur.id_rol);
-
-            var disponibles = await _context.Rol
-                .Where(r => !asignados.Contains(r.id_rol))
-                .Select(r => new RolDto(r.id_rol, r.descripcion))
-                .ToListAsync();
-
-            return Ok(disponibles);
-        }
-
-        // === lo tuyo existente ===
+        // === LISTAR ===
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Usuario>>> GetAll([FromQuery] int pagina = 1, [FromQuery] int pageSize = 20)
         {
@@ -96,6 +46,7 @@ namespace SantaRamona.Controllers
             return Ok(data);
         }
 
+        // === OBTENER ===
         [HttpGet("{id:int}")]
         public async Task<ActionResult<Usuario>> GetById(int id)
         {
@@ -106,6 +57,7 @@ namespace SantaRamona.Controllers
             return usuario is null ? NotFound() : Ok(usuario);
         }
 
+        // === CREAR ===
         [HttpPost]
         public async Task<ActionResult<Usuario>> Create([FromBody] Usuario dto)
         {
@@ -116,6 +68,10 @@ namespace SantaRamona.Controllers
 
             if (dto.id_estadoUsuario <= 0)
                 return BadRequest("id_estadoUsuario debe ser mayor a 0.");
+
+            // 🔧 CAMBIO ROL 1-N: id_rol también obligatorio
+            if (dto.id_rol <= 0)
+                return BadRequest("id_rol debe ser mayor a 0.");
 
             _context.Usuario.Add(dto);
             try
@@ -130,6 +86,7 @@ namespace SantaRamona.Controllers
             return CreatedAtAction(nameof(GetById), new { id = dto.id_usuario }, dto);
         }
 
+        // === ACTUALIZAR ===
         [HttpPut("{id:int}")]
         public async Task<IActionResult> Update(int id, [FromBody] Usuario dto)
         {
@@ -138,6 +95,19 @@ namespace SantaRamona.Controllers
 
             var exists = await _context.Usuario.AnyAsync(u => u.id_usuario == id);
             if (!exists) return NotFound();
+
+            // 🔧 CAMBIO ROL 1-N: proteger al último admin
+            var adminId = await GetAdminRoleIdAsync();
+            if (adminId.HasValue)
+            {
+                var actual = await _context.Usuario.AsNoTracking().FirstOrDefaultAsync(u => u.id_usuario == id);
+                if (actual is not null && actual.id_rol == adminId.Value && dto.id_rol != adminId.Value)
+                {
+                    var totalAdmins = await CountAdminsAsync(adminId.Value);
+                    if (totalAdmins == 1)
+                        return Conflict("No se puede cambiar el rol: es el único Administrador del sistema.");
+                }
+            }
 
             _context.Entry(dto).State = EntityState.Modified;
 
@@ -154,11 +124,21 @@ namespace SantaRamona.Controllers
             return NoContent();
         }
 
+        // === ELIMINAR ===
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete(int id)
         {
             var entity = await _context.Usuario.FindAsync(id);
             if (entity is null) return NotFound();
+
+            // 🔧 opcional: también impedir borrar al último admin
+            var adminId = await GetAdminRoleIdAsync();
+            if (adminId.HasValue && entity.id_rol == adminId.Value)
+            {
+                var totalAdmins = await CountAdminsAsync(adminId.Value);
+                if (totalAdmins == 1)
+                    return Conflict("No se puede eliminar al único Administrador del sistema.");
+            }
 
             _context.Usuario.Remove(entity);
             await _context.SaveChangesAsync();

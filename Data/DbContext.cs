@@ -19,7 +19,6 @@ namespace SantaRamona.Data
         public DbSet<Tipo_Formulario> Tipo_Formulario { get; set; }
         public DbSet<Permiso> Permiso { get; set; }
         public DbSet<Rol> Rol { get; set; }
-        public DbSet<Usuario_Rol> Usuario_Rol { get; set; }
         public DbSet<Tamano> Tamano { get; set; }
         public DbSet<Animal> Animal { get; set; }
         public DbSet<Historial_Medico> Historial_Medico { get; set; }
@@ -35,41 +34,7 @@ namespace SantaRamona.Data
         public DbSet<Donacion> Donacion { get; set; }
 
         public DbSet<Punto_Acopio> Punto_Acopio { get; set; }
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
 
-            // === Mapear tablas exactas (explícito y prolijo) ===
-            modelBuilder.Entity<Usuario>().ToTable("USUARIO");
-            modelBuilder.Entity<Rol>().ToTable("ROL");
-            modelBuilder.Entity<Usuario_Rol>().ToTable("USUARIO_ROL");
-
-            // === Clave compuesta y FKs de USUARIO_ROL ===
-            modelBuilder.Entity<Usuario_Rol>(entity =>
-            {
-                entity.HasKey(ur => new { ur.id_usuario, ur.id_rol });
-
-                entity.HasOne(ur => ur.Usuario)
-                      .WithMany() // si luego agregás colecciones, cámbialo por .WithMany(u => u.UsuarioRoles)
-                      .HasForeignKey(ur => ur.id_usuario)
-                      .OnDelete(DeleteBehavior.Cascade);
-
-                entity.HasOne(ur => ur.Rol)
-                      .WithMany()
-                      .HasForeignKey(ur => ur.id_rol)
-                      .OnDelete(DeleteBehavior.Cascade);
-            });
-
-            // Reglas mínimas (opcional, pero útil)
-            modelBuilder.Entity<Usuario>(e =>
-            {
-                e.Property(x => x.email).IsRequired();
-                e.Property(x => x.clave).IsRequired();
-            });
-            modelBuilder.Entity<Rol>(e =>
-            {
-                e.Property(x => x.descripcion).IsRequired();
-            });
-        }
+        
     }
 }
