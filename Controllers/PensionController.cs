@@ -28,7 +28,7 @@ namespace SantaRamona.Controllers
 
             var data = await _context.Pension
                 .AsNoTracking()
-                .OrderBy(p => p.id_pension)
+                .OrderByDescending(p => p.id_pension)
                 .Skip((pagina - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();

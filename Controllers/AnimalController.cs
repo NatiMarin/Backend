@@ -1,12 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SantaRamona.Data;
-using System.ComponentModel.DataAnnotations.Schema;
+using SantaRamona.Models;
+using System.Collections.Generic;
 using System.Linq;
-using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;         
-using System.Linq;                        
-using SantaRamona.Models;                  
+using System.Threading.Tasks;
 
 namespace SantaRamona.Controllers
 {
@@ -21,6 +19,27 @@ namespace SantaRamona.Controllers
             _context = context;
         }
 
+        // ========================
+        // Helper para capitalizar
+        // ========================
+        private string? Capitalizar(string? texto)
+        {
+            if (string.IsNullOrWhiteSpace(texto))
+                return texto;
+
+            texto = texto.Trim().ToLower();
+
+            var partes = texto.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+            for (int i = 0; i < partes.Length; i++)
+            {
+                var p = partes[i];
+                partes[i] = char.ToUpper(p[0]) + (p.Length > 1 ? p.Substring(1) : "");
+            }
+
+            return string.Join(' ', partes);
+        }
+
         // GET: api/animal?pagina=1&pageSize=20
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Animal>>> GetAll([FromQuery] int pagina = 1, [FromQuery] int pageSize = 20)
@@ -30,7 +49,7 @@ namespace SantaRamona.Controllers
 
             var data = await _context.Animal
                 .AsNoTracking()
-                .OrderBy(a => a.id_animal)
+                .OrderByDescending(a => a.id_animal)
                 .Skip((pagina - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
@@ -46,14 +65,19 @@ namespace SantaRamona.Controllers
             return animal is null ? NotFound() : Ok(animal);
         }
 
+        // ========================
         // POST: api/animal
+        // ========================
         [HttpPost]
         public async Task<ActionResult<Animal>> Create([FromBody] Animal dto)
         {
-            // Aseguramos que SQL genere el IDENTITY
             dto.id_animal = 0;
 
-            // (Opcional) validaciones simples de FKs > 0
+            // Capitalización automática
+            dto.nombre = Capitalizar(dto.nombre);
+            dto.historia = Capitalizar(dto.historia);
+            dto.seguimiento = Capitalizar(dto.seguimiento);
+
             if (dto.id_especie <= 0 || dto.id_estadoAnimal <= 0 || dto.id_usuario <= 0 || dto.id_tamano <= 0)
                 return BadRequest("id_especie, id_estado, id_usuario e id_tamaño deben ser > 0.");
 
@@ -63,17 +87,23 @@ namespace SantaRamona.Controllers
             return CreatedAtAction(nameof(GetById), new { id = dto.id_animal }, dto);
         }
 
+        // ========================
         // PUT: api/animal/5
+        // ========================
         [HttpPut("{id:int}")]
         public async Task<IActionResult> Update(int id, [FromBody] Animal dto)
         {
             if (id != dto.id_animal)
                 return BadRequest("El id de la URL no coincide con el del cuerpo.");
 
-            var exists = await _context.Animal.AnyAsync(a => a.id_animal == id);
-            if (!exists) return NotFound();
+            if (!await _context.Animal.AnyAsync(a => a.id_animal == id))
+                return NotFound();
 
-            // Adjuntamos y marcamos como modificado (evita leer primero)
+            // Capitalización automática
+            dto.nombre = Capitalizar(dto.nombre);
+            dto.historia = Capitalizar(dto.historia);
+            dto.seguimiento = Capitalizar(dto.seguimiento);
+
             _context.Entry(dto).State = EntityState.Modified;
 
             try
@@ -82,8 +112,9 @@ namespace SantaRamona.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                // Si alguien borró entre medio
-                if (!await _context.Animal.AnyAsync(a => a.id_animal == id)) return NotFound();
+                if (!await _context.Animal.AnyAsync(a => a.id_animal == id))
+                    return NotFound();
+
                 throw;
             }
 
@@ -102,6 +133,4 @@ namespace SantaRamona.Controllers
             return NoContent();
         }
     }
-
 }
-

@@ -24,9 +24,7 @@ namespace SantaRamona.Models
         public DateTime? fechaEgreso { get; set; }
         public string? motivoEgreso { get; set; }
         public int? id_estadoPersona { get; set; }
-
-
-
+        public int? id_usuario { get; set; }
 
     }
 }

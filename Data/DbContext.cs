@@ -21,13 +21,11 @@ namespace SantaRamona.Data
         public DbSet<Rol> Rol { get; set; }
         public DbSet<Tamano> Tamano { get; set; }
         public DbSet<Animal> Animal { get; set; }
-        public DbSet<Historial_Medico> Historial_Medico { get; set; }
         public DbSet<Persona> Persona { get; set; }
         public DbSet<Usuario> Usuario { get; set; }
         public DbSet<Pension> Pension { get; set; }
         public DbSet<Provincia> Provincia { get; set; }
         public DbSet<Localidad> Localidad { get; set; }
-        public DbSet<Seguimiento> Seguimiento { get; set; }
         public DbSet<Formulario> Formulario { get; set; }
         public DbSet<Pregunta> Pregunta { get; set; }
         public DbSet<Respuesta> Respuesta { get; set; }

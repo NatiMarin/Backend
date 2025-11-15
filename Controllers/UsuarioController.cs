@@ -38,7 +38,7 @@ namespace SantaRamona.Controllers
 
             var data = await _context.Usuario
                 .AsNoTracking()
-                .OrderBy(u => u.id_usuario)
+                .OrderByDescending(u => u.id_usuario)
                 .Skip((pagina - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
