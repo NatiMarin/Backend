@@ -12,5 +12,7 @@ namespace SantaRamona.Models
         public string pregunta { get; set; }
 
         public int? orden { get; set; }
+
+        public bool activo { get; set; } = true;
     }
 }

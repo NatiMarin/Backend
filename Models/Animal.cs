@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System;
 
 namespace SantaRamona.Models
 {
@@ -21,6 +22,7 @@ namespace SantaRamona.Models
         public DateTime? fechaAdopcion { get; set; }
         public string? historia { get; set; }
         public string? seguimiento { get; set; }
-         
+        public DateTime? fechaModificacion { get; set; } = DateTime.Now;
+
     }
 }

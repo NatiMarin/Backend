@@ -104,6 +104,9 @@ namespace SantaRamona.Controllers
             dto.historia = Capitalizar(dto.historia);
             dto.seguimiento = Capitalizar(dto.seguimiento);
 
+            // NUEVO: fecha de modificación automática en cada update
+            dto.fechaModificacion = DateTime.Now;
+
             _context.Entry(dto).State = EntityState.Modified;
 
             try
