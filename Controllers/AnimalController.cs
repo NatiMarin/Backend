@@ -81,6 +81,9 @@ namespace SantaRamona.Controllers
             if (dto.id_especie <= 0 || dto.id_estadoAnimal <= 0 || dto.id_usuario <= 0 || dto.id_tamano <= 0)
                 return BadRequest("id_especie, id_estado, id_usuario e id_tamaño deben ser > 0.");
 
+            //IMPORTANTE: al crear, que NO tenga fecha de modificación
+            dto.fechaModificacion = null;
+
             _context.Animal.Add(dto);
             await _context.SaveChangesAsync();
 
