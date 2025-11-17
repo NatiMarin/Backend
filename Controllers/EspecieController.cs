@@ -16,6 +16,20 @@ namespace SantaRamona.Controllers
             _context = context;
         }
 
+        // ========================
+        // Helper para normalizar nombre de especie
+        // ========================
+        private string? NormalizarEspecie(string? texto)
+        {
+            if (string.IsNullOrWhiteSpace(texto))
+                return texto;
+
+            texto = texto.Trim().ToLower();
+
+            // Primera letra en mayúscula, resto minúsculas
+            return char.ToUpper(texto[0]) + (texto.Length > 1 ? texto.Substring(1) : "");
+        }
+
         // GET: api/Especie
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Especie>>> GetEspecie()
@@ -39,6 +53,9 @@ namespace SantaRamona.Controllers
         [HttpPost]
         public async Task<ActionResult<Especie>> PostEspecie(Especie especie)
         {
+            // Normalizar nombre de especie
+            especie.especie = NormalizarEspecie(especie.especie);
+
             _context.Especie.Add(especie);
             await _context.SaveChangesAsync();
 
@@ -54,7 +71,11 @@ namespace SantaRamona.Controllers
                 return BadRequest();
             }
 
+            // Normalizar nombre de especie también al modificar
+            especie.especie = NormalizarEspecie(especie.especie);
+
             _context.Entry(especie).State = EntityState.Modified;
+
             try
             {
                 await _context.SaveChangesAsync();
@@ -70,6 +91,7 @@ namespace SantaRamona.Controllers
                     throw;
                 }
             }
+
             return NoContent();
         }
 

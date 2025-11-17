@@ -16,6 +16,20 @@ namespace SantaRamona.Controllers
             _context = context;
         }
 
+        // ========================
+        // Helper para normalizar nombre de tamaño
+        // ========================
+        private string? NormalizarTamano(string? texto)
+        {
+            if (string.IsNullOrWhiteSpace(texto))
+                return texto;
+
+            texto = texto.Trim().ToLower();
+
+            // Primera letra en mayúscula, resto minúscula
+            return char.ToUpper(texto[0]) + (texto.Length > 1 ? texto.Substring(1) : "");
+        }
+
         // GET: api/Tamano
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Tamano>>> GetTamanos()
@@ -39,6 +53,9 @@ namespace SantaRamona.Controllers
         [HttpPost]
         public async Task<ActionResult<Tamano>> PostTamano(Tamano tamano)
         {
+            // Normalizar nombre
+            tamano.tamano = NormalizarTamano(tamano.tamano);
+
             _context.Tamano.Add(tamano);
             await _context.SaveChangesAsync();
 
@@ -54,7 +71,11 @@ namespace SantaRamona.Controllers
                 return BadRequest();
             }
 
+            // Normalizar nombre en modificación
+            tamano.tamano = NormalizarTamano(tamano.tamano);
+
             _context.Entry(tamano).State = EntityState.Modified;
+
             try
             {
                 await _context.SaveChangesAsync();
@@ -70,6 +91,7 @@ namespace SantaRamona.Controllers
                     throw;
                 }
             }
+
             return NoContent();
         }
 

@@ -5,6 +5,7 @@ using SantaRamona.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Text;
 
 namespace SantaRamona.Controllers
 {
@@ -19,8 +20,8 @@ namespace SantaRamona.Controllers
             _context = context;
         }
 
-        // ========================
-        // Helper para capitalizar
+        /// ========================
+        // Helper para capitalizar cada palabra (para NOMBRE)
         // ========================
         private string? Capitalizar(string? texto)
         {
@@ -38,6 +39,39 @@ namespace SantaRamona.Controllers
             }
 
             return string.Join(' ', partes);
+        }
+
+        // ========================
+        // Helper para capitalizar por ORACIONES (para historia / seguimiento)
+        // ========================
+        private string? CapitalizarOraciones(string? texto)
+        {
+            if (string.IsNullOrWhiteSpace(texto))
+                return texto;
+
+            var sb = new StringBuilder();
+            bool inicioOracion = true;
+
+            foreach (var c in texto)
+            {
+                if (inicioOracion && char.IsLetter(c))
+                {
+                    sb.Append(char.ToUpper(c));
+                    inicioOracion = false;
+                }
+                else
+                {
+                    sb.Append(char.ToLower(c));
+                }
+
+                // Consideramos que termina una oración
+                if (c == '.' || c == '!' || c == '?' || c == '\n')
+                {
+                    inicioOracion = true;
+                }
+            }
+
+            return sb.ToString();
         }
 
         // GET: api/animal?pagina=1&pageSize=20
@@ -74,9 +108,10 @@ namespace SantaRamona.Controllers
             dto.id_animal = 0;
 
             // Capitalización automática
-            dto.nombre = Capitalizar(dto.nombre);
-            dto.historia = Capitalizar(dto.historia);
-            dto.seguimiento = Capitalizar(dto.seguimiento);
+            dto.nombre = Capitalizar(dto.nombre);                  // nombre: Cada Palabra
+            dto.historia = CapitalizarOraciones(dto.historia);    // historia: modo oración
+            dto.seguimiento = CapitalizarOraciones(dto.seguimiento);
+
 
             if (dto.id_especie <= 0 || dto.id_estadoAnimal <= 0 || dto.id_usuario <= 0 || dto.id_tamano <= 0)
                 return BadRequest("id_especie, id_estado, id_usuario e id_tamaño deben ser > 0.");
@@ -103,9 +138,10 @@ namespace SantaRamona.Controllers
                 return NotFound();
 
             // Capitalización automática
-            dto.nombre = Capitalizar(dto.nombre);
-            dto.historia = Capitalizar(dto.historia);
-            dto.seguimiento = Capitalizar(dto.seguimiento);
+            dto.nombre = Capitalizar(dto.nombre);                  // nombre: Cada Palabra
+            dto.historia = CapitalizarOraciones(dto.historia);    // historia: modo oración
+            dto.seguimiento = CapitalizarOraciones(dto.seguimiento);
+
 
             // NUEVO: fecha de modificación automática en cada update
             dto.fechaModificacion = DateTime.Now;
