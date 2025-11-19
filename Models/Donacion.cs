@@ -12,7 +12,7 @@ namespace SantaRamona.Models
         [RegularExpression("^(M|I|B|P)$", ErrorMessage = "Seleccione 'M' (Medicamento) o 'I' (Insumo) o 'B' (Banco) o 'P' (No Bancario).")] 
         public string tipo { get; set; }
 
-        [StringLength(40)]
+        [StringLength(500)]
         public string? descripcion { get; set; }
     }
 }

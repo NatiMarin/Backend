@@ -11,7 +11,7 @@ namespace SantaRamona.Models
         public string sexo { get; set; }   // 'M' o 'H'
         public int edadValor { get; set; }
         public string edadUnidad { get; set; }  // 'M' o 'A'
-        public byte[]? imagen { get; set; } // se guarda como varbinary(MAX)
+        public byte[] imagen { get; set; } // se guarda como varbinary(MAX)
         public int id_especie { get; set; }
         public int id_tamano { get; set; }
         public int id_estadoAnimal { get; set; }

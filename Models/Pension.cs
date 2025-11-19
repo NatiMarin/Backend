@@ -23,5 +23,6 @@ namespace SantaRamona.Models
 
         public DateTime? fechaEgreso { get; set; }
         public decimal? montoDia { get; set; }
+        public DateTime? fechaEliminacion { get; set; }
     }
 }

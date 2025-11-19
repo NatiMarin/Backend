@@ -17,8 +17,8 @@ namespace SantaRamona.Models
         public string? calle { get; set; }
         public int? altura { get; set; }
         public string? departamento { get; set; }
-        public int? id_localidad { get; set; }
-        public int? id_provincia { get; set; }
+        public int id_localidad { get; set; }
+        public int id_provincia { get; set; }
         public string? redesSociales { get; set; }
         public DateTime fechaIngreso { get; set; }
         public DateTime? fechaEgreso { get; set; }
