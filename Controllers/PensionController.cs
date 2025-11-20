@@ -100,18 +100,22 @@ namespace SantaRamona.Controllers
         }
 
         // ===================== DELETE =====================
-        // DELETE: api/pension/5
+                   
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete(int id)
         {
             var entity = await _context.Pension.FindAsync(id);
-            if (entity is null) return NotFound();
+            if (entity is null)
+                return NotFound();
 
             entity.fechaEliminacion = DateTime.Now;
+            // si tenés campo activo:
+            // entity.activo = false;
 
-            _context.Pension.Remove(entity);
+            _context.Pension.Update(entity);
             await _context.SaveChangesAsync();
-            return NoContent();
+
+            return Ok(new { mensaje = "Pensión eliminada correctamente." });
         }
 
         // ===================== Helpers =====================
