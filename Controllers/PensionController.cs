@@ -107,6 +107,8 @@ namespace SantaRamona.Controllers
             var entity = await _context.Pension.FindAsync(id);
             if (entity is null) return NotFound();
 
+            entity.fechaEliminacion = DateTime.Now;
+
             _context.Pension.Remove(entity);
             await _context.SaveChangesAsync();
             return NoContent();
