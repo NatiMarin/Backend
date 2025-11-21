@@ -20,7 +20,6 @@ namespace SantaRamona.Models
         public int id_estadoPension { get; set; }
         public int id_usuario { get; set; }
         public DateTime fechaIngreso { get; set; } = DateTime.Now;
-
         public DateTime? fechaEgreso { get; set; }
         public decimal? montoDia { get; set; }
         public DateTime? fechaEliminacion { get; set; }
