@@ -103,20 +103,19 @@ namespace SantaRamona.Controllers
         // ===================== DELETE =====================
 
         [HttpPut("Eliminar/{id:int}")]
-        public async Task<IActionResult> Eliminar(int id, [FromBody] Pension dto)
+        public async Task<IActionResult> Eliminar(int id, [FromBody] EliminarPensionDto dto)
         {
             var entity = await _context.Pension.FindAsync(id);
             if (entity is null)
                 return NotFound();
 
             entity.fechaEliminacion = dto.fechaEliminacion ?? DateTime.Now;
-            entity.id_usuario = dto.id_usuario;   // ← usuario eliminador
+            entity.id_usuario = dto.id_usuario;
 
-            _context.Pension.Update(entity);
             await _context.SaveChangesAsync();
-
             return Ok(new { mensaje = "Pensión eliminada correctamente." });
         }
+
         // ===================== Helpers =====================
         private static string? Validar(Pension p, bool isUpdate)
         {
@@ -155,6 +154,11 @@ namespace SantaRamona.Controllers
                 return "La 'fechaEgreso' no puede ser anterior a 'fechaIngreso'.";
 
             return null;
+        }
+        public class EliminarPensionDto
+        {
+            public DateTime? fechaEliminacion { get; set; }
+            public int id_usuario { get; set; }
         }
     }
 }
