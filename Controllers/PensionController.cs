@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using SantaRamona.Data;
 using SantaRamona.Models;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 
@@ -100,24 +101,22 @@ namespace SantaRamona.Controllers
         }
 
         // ===================== DELETE =====================
-                   
-        [HttpDelete("{id:int}")]
-        public async Task<IActionResult> Delete(int id)
+
+        [HttpPut("Eliminar/{id:int}")]
+        public async Task<IActionResult> Eliminar(int id, [FromBody] Pension dto)
         {
             var entity = await _context.Pension.FindAsync(id);
             if (entity is null)
                 return NotFound();
 
-            entity.fechaEliminacion = DateTime.Now;
-            // si tenés campo activo:
-            // entity.activo = false;
+            entity.fechaEliminacion = dto.fechaEliminacion ?? DateTime.Now;
+            entity.id_usuario = dto.id_usuario;   // ← usuario eliminador
 
             _context.Pension.Update(entity);
             await _context.SaveChangesAsync();
 
             return Ok(new { mensaje = "Pensión eliminada correctamente." });
         }
-
         // ===================== Helpers =====================
         private static string? Validar(Pension p, bool isUpdate)
         {

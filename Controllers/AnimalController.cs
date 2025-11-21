@@ -75,22 +75,31 @@ namespace SantaRamona.Controllers
         }
 
         // GET: api/animal?pagina=1&pageSize=20
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Animal>>> GetAll([FromQuery] int pagina = 1, [FromQuery] int pageSize = 20)
-        {
-            if (pagina < 1) pagina = 1;
-            if (pageSize < 1 || pageSize > 200) pageSize = 20;
+        //[HttpGet]
+        //public async Task<ActionResult<IEnumerable<Animal>>> GetAll([FromQuery] int pagina = 1, [FromQuery] int pageSize = 20)
+        //{
+        //    if (pagina < 1) pagina = 1;
+        //    if (pageSize < 1 || pageSize > 200) pageSize = 20;
 
+        //    var data = await _context.Animal
+        //        .AsNoTracking()
+        //        .OrderByDescending(a => a.id_animal)
+        //        .Skip((pagina - 1) * pageSize)
+        //        .Take(pageSize)
+        //        .ToListAsync();
+
+        //    return Ok(data);
+        //}
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Animal>>> GetAll()
+        {
             var data = await _context.Animal
                 .AsNoTracking()
                 .OrderByDescending(a => a.id_animal)
-                .Skip((pagina - 1) * pageSize)
-                .Take(pageSize)
                 .ToListAsync();
 
             return Ok(data);
         }
-
         // GET: api/animal/5
         [HttpGet("{id:int}")]
         public async Task<ActionResult<Animal>> GetById(int id)
