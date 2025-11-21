@@ -19,15 +19,15 @@ namespace SantaRamona.Controllers
         // =========================================================
         [HttpGet]
         public async Task<ActionResult<object>> GetAll(
-            [FromQuery] int pagina = 1,
-            [FromQuery] int pageSize = 20,
+            //[FromQuery] int pagina = 1,
+            //[FromQuery] int pageSize = 20,
             [FromQuery] int? provinciaId = null,
             [FromQuery] int? localidadId = null,
             [FromQuery] bool? soloActivos = null,
             [FromQuery] string? q = null)
         {
-            if (pagina < 1) pagina = 1;
-            if (pageSize is < 1 or > 200) pageSize = 20;
+            //if (pagina < 1) pagina = 1;
+            //if (pageSize is < 1 or > 200) pageSize = 20;
 
             IQueryable<Punto_Acopio> query = _context.Punto_Acopio.AsNoTracking();
 
@@ -54,18 +54,22 @@ namespace SantaRamona.Controllers
 
             var items = await query
                 .OrderBy(p => p.id_puntoAcopio)
-                .Skip((pagina - 1) * pageSize)
-                .Take(pageSize)
+                //.Skip((pagina - 1) * pageSize)
+                //.Take(pageSize)
                 .ToListAsync();
 
-            return Ok(new
-            {
-                pagina,
-                pageSize,
-                total,
-                paginas = (int)Math.Ceiling(total / (double)pageSize),
-                items
-            });
+            //return Ok(new
+            //{
+            //pagina,
+            //pageSize,
+            //total,
+            //paginas = (int)Math.Ceiling(total / (double)pageSize),
+            //items
+            //});
+
+            return Ok(items);
+
+
         }
 
         // =========================================================
