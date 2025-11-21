@@ -48,21 +48,33 @@ namespace SantaRamona.Controllers
         }
 
         // ===================== GET (Paginado) =====================
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Persona>>> GetAll([FromQuery] int pagina = 1, [FromQuery] int pageSize = 20)
-        {
-            if (pagina < 1) pagina = 1;
-            if (pageSize < 1 || pageSize > 200) pageSize = 20;
+        //[HttpGet]
+        //public async Task<ActionResult<IEnumerable<Persona>>> GetAll([FromQuery] int pagina = 1, [FromQuery] int pageSize = 20)
+        //{
+        //    if (pagina < 1) pagina = 1;
+        //    if (pageSize < 1 || pageSize > 200) pageSize = 20;
+        //
+        //    var data = await _context.Persona
+        //        .AsNoTracking()
+        //        .OrderByDescending(p => p.id_persona)
+        //       .Skip((pagina - 1) * pageSize)
+        //        .Take(pageSize)
+        //        .ToListAsync();
+        //   return Ok(data);
+        //}
 
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Persona>>> GetAll()
+        {
             var data = await _context.Persona
                 .AsNoTracking()
-                .OrderByDescending(p => p.id_persona)
-                .Skip((pagina - 1) * pageSize)
-                .Take(pageSize)
+                .OrderBy(p => p.apellido)
+                .ThenBy(p => p.nombre)
                 .ToListAsync();
 
             return Ok(data);
         }
+
 
         // ===================== GET por ID =====================
         [HttpGet("{id:int}")]
