@@ -95,11 +95,24 @@ namespace SantaRamona.Controllers
         {
             var data = await _context.Animal
                 .AsNoTracking()
+                .Where(a => a.fechaEliminacion == null)    // 👈 OCULTA los eliminados
                 .OrderByDescending(a => a.id_animal)
                 .ToListAsync();
 
             return Ok(data);
         }
+
+        [HttpGet("ConEliminadas")]
+        public async Task<ActionResult<IEnumerable<Animal>>> GetAllConEliminadas()
+        {
+            var data = await _context.Animal
+                .AsNoTracking()
+                .OrderByDescending(a => a.id_animal)
+                .ToListAsync();
+
+            return Ok(data);
+        }
+
         // GET: api/animal/5
         [HttpGet("{id:int}")]
         public async Task<ActionResult<Animal>> GetById(int id)
@@ -172,16 +185,37 @@ namespace SantaRamona.Controllers
             return NoContent();
         }
 
+        // ========================
         // DELETE: api/animal/5
-        [HttpDelete("{id:int}")]
-        public async Task<IActionResult> Delete(int id)
+        // ========================
+
+        [HttpPut("Eliminar/{id:int}")]
+        public async Task<IActionResult> Eliminar(int id, [FromBody] EliminarAnimalDto dto)
         {
             var entity = await _context.Animal.FindAsync(id);
-            if (entity is null) return NotFound();
+            if (entity is null)
+                return NotFound("El animal no existe.");
 
-            _context.Animal.Remove(entity);
+            if (dto.id_usuario <= 0)
+                return BadRequest("id_usuario es obligatorio.");
+
+            entity.fechaEliminacion = dto.fechaEliminacion ?? DateTime.Now;
+            entity.id_usuario = dto.id_usuario;
+
             await _context.SaveChangesAsync();
-            return NoContent();
+
+            return Ok(new
+            {
+                mensaje = "Animal eliminado correctamente.",
+                id = entity.id_animal,
+                fechaEliminacion = entity.fechaEliminacion,
+                usuario = entity.id_usuario
+            });
+        }
+        public class EliminarAnimalDto
+        {
+            public DateTime? fechaEliminacion { get; set; }
+            public int id_usuario { get; set; }
         }
     }
 }

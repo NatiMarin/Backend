@@ -68,6 +68,7 @@ namespace SantaRamona.Controllers
         {
             var data = await _context.Persona
                 .AsNoTracking()
+                .Where(p => p.fechaEliminacion == null)   // 👈 FILTRA las eliminadas
                 .OrderBy(p => p.apellido)
                 .ThenBy(p => p.nombre)
                 .ToListAsync();
@@ -75,6 +76,17 @@ namespace SantaRamona.Controllers
             return Ok(data);
         }
 
+        [HttpGet("ConEliminadas")]
+        public async Task<ActionResult<IEnumerable<Persona>>> GetAllConEliminadas()
+        {
+            var data = await _context.Persona
+                .AsNoTracking()
+                .OrderBy(p => p.apellido)
+                .ThenBy(p => p.nombre)
+                .ToListAsync();
+
+            return Ok(data);
+        }
 
         // ===================== GET por ID =====================
         [HttpGet("{id:int}")]
@@ -168,16 +180,33 @@ namespace SantaRamona.Controllers
         }
 
         // ===================== DELETE =====================
-        [HttpDelete("{id:int}")]
-        public async Task<IActionResult> Delete(int id)
+        [HttpPut("Eliminar/{id:int}")]
+        public async Task<IActionResult> Eliminar(int id, [FromBody] EliminarPersonaDto dto)
         {
-            var entity = await _context.Persona.FindAsync(id);
-            if (entity is null)
-                return NotFound();
+            var persona = await _context.Persona.FindAsync(id);
+            if (persona is null)
+                return NotFound("La persona no existe.");
 
-            _context.Persona.Remove(entity);
+            if (dto.id_usuario <= 0)
+                return BadRequest("El campo id_usuario es obligatorio.");
+
+            persona.fechaEliminacion = dto.fechaEliminacion ?? DateTime.Now;
+            persona.id_usuario = dto.id_usuario;
+
             await _context.SaveChangesAsync();
-            return NoContent();
+
+            return Ok(new
+            {
+                mensaje = "Persona eliminada correctamente.",
+                id = persona.id_persona,
+                fechaEliminacion = persona.fechaEliminacion,
+                usuario = persona.id_usuario
+            });
+        }
+        public class EliminarPersonaDto
+        {
+            public DateTime? fechaEliminacion { get; set; }
+            public int id_usuario { get; set; }
         }
     }
 }

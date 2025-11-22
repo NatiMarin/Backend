@@ -76,7 +76,7 @@ namespace SantaRamona.Controllers
         public async Task<IActionResult> Update(int id, [FromBody] Pension dto)
         {
             if (id != dto.id_pension)
-                return BadRequest("El ID de la URL no coincide con el del cuerpo.");
+                return BadRequest("El id de la URL no coincide con el del cuerpo.");
 
             var exists = await _context.Pension.AnyAsync(p => p.id_pension == id);
             if (!exists) return NotFound();
@@ -107,14 +107,25 @@ namespace SantaRamona.Controllers
         {
             var entity = await _context.Pension.FindAsync(id);
             if (entity is null)
-                return NotFound();
+                return NotFound("La pensión no existe.");
+
+            if (dto.id_usuario <= 0)
+                return BadRequest("id_usuario es obligatorio.");
 
             entity.fechaEliminacion = dto.fechaEliminacion ?? DateTime.Now;
             entity.id_usuario = dto.id_usuario;
 
             await _context.SaveChangesAsync();
-            return Ok(new { mensaje = "Pensión eliminada correctamente." });
+
+            return Ok(new
+            {
+                mensaje = "Pensión eliminada correctamente.",
+                id = entity.id_pension,
+                fechaEliminacion = entity.fechaEliminacion,
+                usuario = entity.id_usuario
+            });
         }
+
 
         // ===================== Helpers =====================
         private static string? Validar(Pension p, bool isUpdate)

@@ -23,6 +23,7 @@ namespace SantaRamona.Models
         public string? historia { get; set; }
         public string? seguimiento { get; set; }
         public DateTime? fechaModificacion { get; set; }
+        public DateTime? fechaEliminacion { get; set; }
 
     }
 }

@@ -25,6 +25,7 @@ namespace SantaRamona.Models
         public string? motivoEgreso { get; set; }
         public int? id_estadoPersona { get; set; }
         public int? id_usuario { get; set; }
+        public DateTime? fechaEliminacion { get; set; }
 
     }
 }
