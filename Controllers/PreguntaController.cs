@@ -17,20 +17,32 @@ namespace SantaRamona.Controllers
         }
 
         // GET: api/Pregunta?pagina=1&pageSize=20
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Pregunta>>> GetPreguntas(
-            [FromQuery] int pagina = 1,
-            [FromQuery] int pageSize = 20)
-        {
-            // Validaciones estándar
-            if (pagina < 1) pagina = 1;
-            if (pageSize < 1 || pageSize > 200) pageSize = 20;
+        //// GET: api/Pregunta?pagina=1&pageSize=20
+        //[HttpGet]
+        //public async Task<ActionResult<IEnumerable<Pregunta>>> GetPreguntas(
+        //    [FromQuery] int pagina = 1,
+        //    [FromQuery] int pageSize = 20)
+        //{
+        //    if (pagina < 1) pagina = 1;
+        //    if (pageSize < 1 || pageSize > 200) pageSize = 20;
+        //
+        //    var data = await _context.Pregunta
+        //        .AsNoTracking()
+        //        .OrderByDescending(p => p.id_pregunta)
+        //        .Skip((pagina - 1) * pageSize)
+        //        .Take(pageSize)
+        //        .ToListAsync();
+        //
+        //    return Ok(data);
+        //}
 
+        // GET: api/Pregunta - sin paginación 
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Pregunta>>> GetPreguntas()
+        {
             var data = await _context.Pregunta
                 .AsNoTracking()
-                .OrderByDescending(p => p.id_pregunta) //  últimas arriba
-                .Skip((pagina - 1) * pageSize)
-                .Take(pageSize)
+                .OrderByDescending(p => p.id_pregunta) // últimas arriba, igual que antes
                 .ToListAsync();
 
             return Ok(data);
